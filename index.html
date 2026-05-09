@@ -664,8 +664,11 @@ function analyze(){
           console.error("Alfred worker returned error:",JSON.stringify(data));
           renderResults({passport:passport,from:from,to:to,via:via,result:null,workerFailed:true});
         } else {
+          var statusMap={"free":"f","voa":"o","evisa":"e","required":"v","forbidden":"x","eta":"t"};
+          var rawStatus=data.status||"required";
+          var normStatus=statusMap[rawStatus]||rawStatus;
           var aiResult={
-            status:data.status||"required",
+            status:normStatus,
             days:data.days||null,
             note:data.notes||"",
             pv:6,ins:"rec",
