@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Pasport — AI-powered visa & travel intelligence. Know your entry requirements before you fly.">
+<meta property="og:title" content="Pasport — Travel Intelligence">
+<meta property="og:description" content="Visa requirements, transit rules, entry conditions — all in one place.">
+<meta property="og:type" content="website">
+<title>Pasport — Travel Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F8F7F4;
+  --surface:#FFFFFF;
+  --border:rgba(0,0,0,0.09);
+  --border-med:rgba(0,0,0,0.16);
+  --text:#1A1A18;
+  --text-2:#6B6B64;
+  --text-3:#9B9B92;
+  --accent:#1A5C3A;
+  --accent-bg:#EAF3E6;
+  --accent-mid:#2D7A4E;
+  --warn:#92500A;
+  --warn-bg:#FEF3E2;
+  --danger:#8B1E1E;
+  --danger-bg:#FEF2F2;
+  --info:#1A3D5C;
+  --info-bg:#EEF4FB;
+  --r:16px;
+  --r-sm:10px;
+  --r-xs:7px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.05);
+  --shadow-lg:0 4px 32px rgba(0,0,0,0.10);
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2rem;height:58px;
+  background:rgba(248,247,244,0.88);
+  backdrop-filter:blur(20px) saturate(1.4);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  display:flex;align-items:center;gap:8px;
+  font-family:'DM Serif Display',serif;
+  font-size:1.2rem;color:var(--text);
+  text-decoration:none;letter-spacing:-0.01em;
+}
+.nav-dot{width:8px;height:8px;background:var(--accent);border-radius:50%}
+.nav-right{display:flex;align-items:center;gap:10px}
+.btn-ghost{
+  font-size:13px;font-weight:500;
+  padding:6px 14px;border-radius:100px;
+  cursor:pointer;border:1px solid var(--border-med);
+  background:transparent;color:var(--text-2);
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.15s;
+}
+.btn-ghost:hover{background:var(--surface);color:var(--text)}
+.btn-dark{
+  font-size:13px;font-weight:500;
+  padding:6px 16px;border-radius:100px;
+  cursor:pointer;border:none;
+  background:var(--text);color:#fff;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.15s;
+}
+.btn-dark:hover{background:#2D2D2A}
+.lang-toggle{
+  display:flex;align-items:center;
+  background:var(--bg);border:1px solid var(--border-med);
+  border-radius:100px;overflow:hidden;padding:2px;
+  gap:2px;
+}
+.lang-btn{
+  font-size:12px;font-weight:500;
+  padding:4px 10px;border-radius:100px;
+  border:none;background:transparent;
+  cursor:pointer;color:var(--text-3);
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.15s;
+}
+.lang-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+
+/* ── HERO ── */
+.hero{
+  padding:120px 2rem 56px;
+  text-align:center;
+  max-width:740px;
+  margin:0 auto;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--accent-bg);color:var(--accent);
+  font-size:12px;font-weight:500;
+  padding:5px 13px;border-radius:100px;
+  margin-bottom:1.5rem;letter-spacing:0.02em;
+}
+.hero h1{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(2.4rem,6vw,3.8rem);
+  line-height:1.08;letter-spacing:-0.025em;
+  margin-bottom:1rem;
+}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero p{
+  font-size:1.05rem;color:var(--text-2);
+  max-width:480px;margin:0 auto 2.5rem;
+  font-weight:300;line-height:1.75;
+}
+
+/* ── FORM CARD ── */
+.form-wrap{max-width:680px;margin:0 auto 2rem;padding:0 1rem}
+.form-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  box-shadow:var(--shadow-lg);
+  padding:2rem;
+}
+.free-bar{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-bottom:1.25rem;
+  font-size:12px;color:var(--text-3);
+}
+.fdots{display:flex;gap:5px}
+.fdot{width:7px;height:7px;border-radius:50%;background:var(--accent);transition:opacity 0.3s}
+.fdot.used{opacity:0.18}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.field{display:flex;flex-direction:column;gap:5px}
+.flbl{
+  font-size:11px;font-weight:500;
+  color:var(--text-3);
+  letter-spacing:0.07em;text-transform:uppercase;
+}
+.finput{
+  width:100%;padding:10px 13px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:var(--r-sm);
+  font-family:'DM Sans',sans-serif;
+  font-size:13.5px;color:var(--text);
+  outline:none;transition:border-color 0.15s,box-shadow 0.15s;
+  appearance:none;
+}
+.finput:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,92,58,0.09);background:#fff}
+.finput::placeholder{color:var(--text-3)}
+select.finput{
+  cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%239B9B92' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center;padding-right:32px;
+}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1rem}
+.chip{
+  padding:5px 13px;border-radius:100px;
+  font-size:12.5px;border:1px solid var(--border-med);
+  cursor:pointer;background:transparent;
+  color:var(--text-2);transition:all 0.12s;
+  font-family:'DM Sans',sans-serif;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);font-weight:500}
+.run-btn{
+  width:100%;padding:13px;
+  background:var(--text);color:#fff;
+  border:none;border-radius:var(--r-sm);
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:500;
+  cursor:pointer;transition:all 0.15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:1rem;
+}
+.run-btn:hover{background:#2D2D2A;transform:translateY(-1px);box-shadow:var(--shadow)}
+.run-btn:active{transform:translateY(0)}
+.run-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none}
+.disclaimer{
+  display:flex;gap:8px;align-items:flex-start;
+  background:var(--warn-bg);
+  border:1px solid rgba(146,80,10,0.15);
+  border-radius:var(--r-xs);
+  padding:9px 12px;margin-top:1rem;
+}
+.disclaimer p{font-size:11.5px;color:var(--warn);line-height:1.55}
+
+/* ── API KEY SETUP ── */
+.setup-banner{
+  background:var(--info-bg);
+  border:1px solid rgba(26,61,92,0.15);
+  border-radius:var(--r-sm);
+  padding:14px 16px;margin-bottom:1rem;
+  display:none;
+}
+.setup-banner.visible{display:block}
+.setup-banner h4{font-size:13.5px;font-weight:500;color:var(--info);margin-bottom:6px}
+.setup-banner p{font-size:12.5px;color:var(--info);line-height:1.5;margin-bottom:10px;opacity:0.85}
+.setup-row{display:flex;gap:8px}
+.setup-row input{
+  flex:1;padding:8px 12px;
+  background:#fff;border:1px solid rgba(26,61,92,0.25);
+  border-radius:var(--r-xs);font-family:'DM Sans',sans-serif;
+  font-size:13px;color:var(--text);outline:none;
+}
+.setup-row button{
+  padding:8px 16px;background:var(--info);color:#fff;
+  border:none;border-radius:var(--r-xs);
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+  cursor:pointer;white-space:nowrap;
+}
+
+/* ── LOADING ── */
+.loading{display:none;text-align:center;padding:2.5rem;max-width:680px;margin:0 auto}
+.loading.visible{display:block}
+.spinner{
+  width:28px;height:28px;
+  border:2px solid var(--border-med);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin 0.7s linear infinite;
+  margin:0 auto 1rem;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-msg{color:var(--text-3);font-size:14px}
+
+/* ── RESULTS ── */
+.results{max-width:680px;margin:0 auto 3rem;padding:0 1rem;display:none}
+.results.visible{display:block}
+.r-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;margin-bottom:10px;
+  box-shadow:var(--shadow);
+  animation:fadeUp 0.35s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.r-head{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+}
+.r-ico{
+  width:30px;height:30px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:13px;font-weight:600;
+}
+.r-tit{font-size:13.5px;font-weight:500}
+.r-sub{font-size:11.5px;color:var(--text-3)}
+.pill{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 10px;border-radius:100px;
+  font-size:11.5px;font-weight:500;
+  margin-left:auto;flex-shrink:0;
+}
+.pill.ok{background:var(--accent-bg);color:var(--accent)}
+.pill.warn{background:var(--warn-bg);color:var(--warn)}
+.pill.bad{background:var(--danger-bg);color:var(--danger)}
+.pill.info{background:var(--info-bg);color:var(--info)}
+.r-body{padding:14px 16px;font-size:13.5px;color:var(--text-2);line-height:1.7}
+.r-body p+p{margin-top:8px}
+.chk{list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:7px}
+.chk li{display:flex;gap:9px;font-size:13px;color:var(--text-2);line-height:1.5;align-items:flex-start}
+.chk-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:7px}
+.sumbar{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));
+  border:1px solid var(--border);border-radius:var(--r-sm);
+  overflow:hidden;margin-bottom:1rem;
+}
+.seg{text-align:center;padding:10px 6px;border-right:1px solid var(--border)}
+.seg:last-child{border-right:none}
+.seg-v{font-size:12.5px;font-weight:500;margin-bottom:2px;word-break:break-word}
+.seg-l{font-size:10.5px;color:var(--text-3)}
+
+/* ── PAYWALL ── */
+.paywall-wrap{display:none;max-width:680px;margin:0 auto 3rem;padding:0 1rem}
+.paywall-wrap.visible{display:block}
+.paywall-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:2.5rem 2rem;
+  text-align:center;
+  box-shadow:var(--shadow-lg);
+}
+.pw-emoji{font-size:2.2rem;margin-bottom:1rem}
+.pw-h{font-family:'DM Serif Display',serif;font-size:1.6rem;margin-bottom:0.5rem;letter-spacing:-0.01em}
+.pw-p{color:var(--text-2);font-size:14px;margin-bottom:1.5rem;line-height:1.65;max-width:340px;margin-left:auto;margin-right:auto}
+.pw-price{font-size:2.4rem;font-weight:300;margin-bottom:0.25rem}
+.pw-price span{font-size:1rem;color:var(--text-3);font-weight:400}
+.pw-feats{list-style:none;margin-bottom:1.5rem}
+.pw-feats li{font-size:13px;color:var(--text-2);padding:4px 0}
+.pw-btn{
+  display:inline-block;padding:13px 2.5rem;
+  background:var(--text);color:#fff;
+  border:none;border-radius:var(--r-sm);
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;
+  cursor:pointer;transition:all 0.15s;text-decoration:none;
+}
+.pw-btn:hover{background:#2D2D2A}
+.pw-note{font-size:11.5px;color:var(--text-3);margin-top:0.75rem}
+
+/* ── TRUST ── */
+.trust{
+  max-width:680px;margin:0 auto 4rem;
+  display:flex;align-items:center;justify-content:center;
+  gap:2rem;flex-wrap:wrap;padding:0 1rem;
+}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-3)}
+.trust-item svg{color:var(--accent);flex-shrink:0}
+
+/* ── HOW IT WORKS ── */
+.how{max-width:680px;margin:0 auto 5rem;padding:0 1rem}
+.how h2{
+  font-family:'DM Serif Display',serif;
+  font-size:1.8rem;margin-bottom:2rem;
+  text-align:center;letter-spacing:-0.01em;
+}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.how-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:1.25rem;
+}
+.how-num{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--accent);margin-bottom:0.75rem}
+.how-card h3{font-size:14px;font-weight:500;margin-bottom:0.4rem}
+.how-card p{font-size:13px;color:var(--text-2);line-height:1.65}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);
+  padding:2rem;text-align:center;
+  color:var(--text-3);font-size:12.5px;line-height:1.9;
+}
+footer a{color:var(--text-2);text-decoration:none}
+footer a:hover{color:var(--text)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  nav{padding:0 1rem}
+  .btn-ghost{display:none}
+  .grid2{grid-template-columns:1fr}
+  .how-grid{grid-template-columns:1fr}
+  .trust{gap:1rem}
+  .hero{padding:100px 1.25rem 48px}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     NAVIGATION
+════════════════════════════════ -->
+<nav>
+  <a class="nav-logo" href="#">
+    <span class="nav-dot"></span>
+    Pasport
+  </a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btnEN" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="btnGR" onclick="setLang('gr')">ΕΛ</button>
+    </div>
+    <button class="btn-ghost" onclick="showPaywall()" data-t="signIn">Sign in</button>
+    <button class="btn-dark" onclick="showPaywall()" data-t="getAccess">Get full access — €5/mo</button>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════
+     HERO
+════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-badge">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    <span data-t="badge"></span>
+  </div>
+  <h1 data-t="heroH1"></h1>
+  <p data-t="heroP"></p>
+</section>
+
+<!-- ════════════════════════════════
+     FORM
+════════════════════════════════ -->
+<div class="form-wrap">
+
+  <!-- API key setup banner -->
+  <div class="setup-banner" id="setupBanner">
+    <h4 data-t="setupTitle"></h4>
+    <p data-t="setupDesc"></p>
+    <div class="setup-row">
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." data-t-placeholder="setupPlaceholder">
+      <button onclick="saveKey()" data-t="setupSave"></button>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="free-bar">
+      <span data-t="freeQueries"></span>
+      <div class="fdots">
+        <div class="fdot" id="d0"></div>
+        <div class="fdot" id="d1"></div>
+        <div class="fdot" id="d2"></div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <div class="flbl" data-t="labelPassport"></div>
+        <select class="finput" id="passport"></select>
+      </div>
+      <div class="field">
+        <div class="flbl" data-t="labelFrom"></div>
+        <select class="finput" id="from"></select>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <div class="flbl" data-t="labelTo"></div>
+        <select class="finput" id="to"></select>
+      </div>
+      <div class="field">
+        <div class="flbl" data-t="labelVia"></div>
+        <select class="finput" id="via"></select>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1rem">
+      <div class="flbl" style="margin-bottom:8px" data-t="labelPurpose"></div>
+      <div class="chips" id="chips"></div>
+    </div>
+
+    <div class="field">
+      <div class="flbl">
+        <span data-t="labelContext"></span>
+        <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--text-3)" data-t="labelContextOpt"></span>
+      </div>
+      <textarea class="finput" id="ctx" rows="2" data-t-placeholder="contextPlaceholder" style="margin-top:5px;resize:vertical"></textarea>
+    </div>
+
+    <button class="run-btn" id="runBtn" onclick="analyze()">
+      <span data-t="analyzeBtn"></span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+
+    <div class="disclaimer">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#92500A" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <p data-t="disclaimer"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LOADING
+════════════════════════════════ -->
+<div class="loading" id="loadingWrap">
+  <div class="spinner"></div>
+  <div class="spin-msg" id="spinMsg"></div>
+</div>
+
+<!-- ════════════════════════════════
+     PAYWALL
+════════════════════════════════ -->
+<div class="paywall-wrap" id="paywallWrap">
+  <div class="paywall-card">
+    <div class="pw-emoji">🌍</div>
+    <h2 class="pw-h" data-t="pwTitle"></h2>
+    <p class="pw-p" data-t="pwDesc"></p>
+    <div class="pw-price">€5 <span data-t="pwPer"></span></div>
+    <ul class="pw-feats" id="pwFeats"></ul>
+    <!-- Replace href with your actual Stripe checkout link -->
+    <a href="https://buy.stripe.com/YOUR_STRIPE_LINK" class="pw-btn" target="_blank" data-t="pwBtn"></a>
+    <p class="pw-note" data-t="pwNote"></p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     RESULTS
+════════════════════════════════ -->
+<div class="results" id="resultsWrap"></div>
+
+<!-- ════════════════════════════════
+     TRUST STRIP
+════════════════════════════════ -->
+<div class="trust" id="trustStrip"></div>
+
+<!-- ════════════════════════════════
+     HOW IT WORKS
+════════════════════════════════ -->
+<section class="how">
+  <h2 data-t="howTitle"></h2>
+  <div class="how-grid" id="howGrid"></div>
+</section>
+
+<!-- ════════════════════════════════
+     FOOTER
+════════════════════════════════ -->
+<footer>
+  <p>
+    <strong style="color:var(--text-2)">Pasport</strong> &nbsp;·&nbsp;
+    <a href="#" data-t="footerTerms"></a> &nbsp;·&nbsp;
+    <a href="#" data-t="footerPrivacy"></a> &nbsp;·&nbsp;
+    <a href="mailto:hello@pasport.app" data-t="footerContact"></a>
+  </p>
+  <p style="margin-top:6px" data-t="footerDisclaimer"></p>
+</footer>
+
+<!-- ════════════════════════════════
+     SCRIPT
+════════════════════════════════ -->
+<script>
+/* ───────────────────────────────────
+   TRANSLATIONS
+─────────────────────────────────── */
+const T = {
+  en: {
+    badge:           "AI-powered travel intelligence",
+    heroH1:          "Know before<br>you <em>fly</em>.",
+    heroP:           "Visa requirements, transit rules, entry conditions — all in one place. Powered by AI, updated continuously.",
+    signIn:          "Sign in",
+    getAccess:       "Get full access — €5/mo",
+    setupTitle:      "Enter your Anthropic API key to activate",
+    setupDesc:       "Your key is stored only in your browser (localStorage). It is never sent anywhere except directly to Anthropic's API. Get your key at console.anthropic.com.",
+    setupPlaceholder:"sk-ant-api03-...",
+    setupSave:       "Save key",
+    freeQueries:     "Free queries remaining:",
+    labelPassport:   "Your passport",
+    labelFrom:       "Departing from",
+    labelTo:         "Destination",
+    labelVia:        "Transit via (optional)",
+    labelPurpose:    "Purpose of travel",
+    labelContext:    "Extra context ",
+    labelContextOpt: "(optional)",
+    contextPlaceholder: "e.g. I also hold a US Green Card. Planning 10 days, no prior Schengen issues.",
+    analyzeBtn:      "Analyze my trip",
+    disclaimer:      "Guidance only — not legal advice. Always verify with official embassy sources before traveling.",
+    purposes:        ["Tourism","Business","Transit only","Study","Work","Residence"],
+    loadingMsgs:     ["Checking visa requirements…","Analyzing transit rules…","Reviewing entry conditions…","Cross-referencing advisories…","Compiling your travel brief…"],
+    pwTitle:         "Free queries used up",
+    pwDesc:          "Subscribe to Pasport for unlimited AI-powered travel intelligence, real-time updates, and document checklists.",
+    pwPer:           "/ month",
+    pwFeats:         ["✓  Unlimited queries","✓  Multi-stop itinerary analysis","✓  Real-time policy updates","✓  Document checklist downloads","✓  Cancel anytime"],
+    pwBtn:           "Subscribe with Stripe →",
+    pwNote:          "Secure payment via Stripe. No hidden fees.",
+    howTitle:        "How it works",
+    howSteps: [
+      { num:"01", title:"Enter your trip",    body:"Your passport, origin, destination, transit countries, and purpose of travel." },
+      { num:"02", title:"AI analyzes",        body:"Our agent cross-references visa databases, transit rules, and current entry restrictions." },
+      { num:"03", title:"Clear guidance",     body:"You receive a full breakdown with document checklist, warnings, and official source links." }
+    ],
+    trust: ["AI-verified sources","Updated continuously","12,000+ travelers helped","Private by default"],
+    footerTerms:      "Terms",
+    footerPrivacy:    "Privacy",
+    footerContact:    "Contact",
+    footerDisclaimer: "Always verify with official embassy and government sources. This is guidance, not legal advice.",
+    segFrom:  "From",
+    segTo:    "To",
+    segVia:   "Via",
+    segPassport:"Passport",
+    segPurpose: "Purpose",
+    riskLow:  "Low risk",
+    riskMed:  "Medium risk",
+    riskHigh: "High risk",
+    generatedOn: "Generated on",
+    verifySources: "Verify with official sources",
+    verifySubtitle: "Always confirm before you travel",
+    paywallCta: "Get full access — €5/mo",
+    paywallCtaDesc: "You've used all your free queries.",
+    errorTitle: "Analysis failed",
+    errorSub:   "Please try again",
+    errorBody:  "Something went wrong. Please check your API key and connection, then try again.",
+    noKeyTitle: "API key required",
+    noKeyBody:  "Please enter your Anthropic API key in the setup banner above to start.",
+  },
+  gr: {
+    badge:           "Τεχνητή Νοημοσύνη για ταξιδιωτικές πληροφορίες",
+    heroH1:          "Μάθε πριν<br><em>πετάξεις</em>.",
+    heroP:           "Απαιτήσεις βίζας, κανόνες διέλευσης, συνθήκες εισόδου — όλα σε ένα μέρος. Τεχνητή Νοημοσύνη, ενημερωμένο συνεχώς.",
+    signIn:          "Σύνδεση",
+    getAccess:       "Πλήρης πρόσβαση — €5/μήνα",
+    setupTitle:      "Εισάγετε το κλειδί Anthropic API για ενεργοποίηση",
+    setupDesc:       "Το κλειδί σας αποθηκεύεται μόνο στον browser σας (localStorage). Δεν αποστέλλεται πουθενά εκτός από το API της Anthropic. Αποκτήστε το κλειδί στο console.anthropic.com.",
+    setupPlaceholder:"sk-ant-api03-...",
+    setupSave:       "Αποθήκευση",
+    freeQueries:     "Δωρεάν ερωτήματα:",
+    labelPassport:   "Το διαβατήριό σας",
+    labelFrom:       "Αναχώρηση από",
+    labelTo:         "Προορισμός",
+    labelVia:        "Διέλευση μέσω (προαιρετικό)",
+    labelPurpose:    "Σκοπός ταξιδιού",
+    labelContext:    "Επιπλέον πληροφορίες ",
+    labelContextOpt: "(προαιρετικό)",
+    contextPlaceholder: "π.χ. Έχω επίσης Green Card ΗΠΑ. Σχεδιάζω 10 ημέρες, χωρίς προηγούμενα προβλήματα Σένγκεν.",
+    analyzeBtn:      "Ανάλυση ταξιδιού",
+    disclaimer:      "Παρέχεται μόνο ως καθοδήγηση — δεν αποτελεί νομική συμβουλή. Πάντα επαληθεύετε με επίσημες πηγές πριν ταξιδέψετε.",
+    purposes:        ["Τουρισμός","Επαγγελματικό","Μόνο διέλευση","Σπουδές","Εργασία","Κατοικία"],
+    loadingMsgs:     ["Έλεγχος απαιτήσεων βίζας…","Ανάλυση κανόνων διέλευσης…","Έλεγχος συνθηκών εισόδου…","Αντιπαραβολή ταξιδιωτικών οδηγιών…","Σύνταξη της ταξιδιωτικής σας ανάλυσης…"],
+    pwTitle:         "Τα δωρεάν ερωτήματα εξαντλήθηκαν",
+    pwDesc:          "Εγγραφείτε στο Pasport για απεριόριστη ταξιδιωτική νοημοσύνη AI, ενημερώσεις σε πραγματικό χρόνο και λίστες εγγράφων.",
+    pwPer:           "/ μήνα",
+    pwFeats:         ["✓  Απεριόριστα ερωτήματα","✓  Ανάλυση πολυσταθμικών δρομολογίων","✓  Ενημερώσεις πολιτικής σε πραγματικό χρόνο","✓  Λήψη λίστας εγγράφων","✓  Ακύρωση οποτεδήποτε"],
+    pwBtn:           "Εγγραφή μέσω Stripe →",
+    pwNote:          "Ασφαλής πληρωμή μέσω Stripe. Χωρίς κρυφές χρεώσεις.",
+    howTitle:        "Πώς λειτουργεί",
+    howSteps: [
+      { num:"01", title:"Εισάγετε το ταξίδι σας",  body:"Το διαβατήριό σας, την αφετηρία, τον προορισμό, τις χώρες διέλευσης και τον σκοπό." },
+      { num:"02", title:"Η ΤΝ αναλύει",             body:"Ο πράκτορας αντιπαραβάλλει βάσεις δεδομένων βίζας, κανόνες διέλευσης και τρέχοντες περιορισμούς." },
+      { num:"03", title:"Σαφής καθοδήγηση",         body:"Λαμβάνετε πλήρη ανάλυση με λίστα εγγράφων, προειδοποιήσεις και επίσημους συνδέσμους." }
+    ],
+    trust: ["Επαληθευμένες πηγές AI","Συνεχής ενημέρωση","12.000+ ταξιδιώτες","Απόρρητο by default"],
+    footerTerms:      "Όροι",
+    footerPrivacy:    "Απόρρητο",
+    footerContact:    "Επικοινωνία",
+    footerDisclaimer: "Πάντα επαληθεύετε με επίσημες πηγές. Αυτό είναι καθοδήγηση, όχι νομική συμβουλή.",
+    segFrom:    "Από",
+    segTo:      "Σε",
+    segVia:     "Μέσω",
+    segPassport:"Διαβατήριο",
+    segPurpose: "Σκοπός",
+    riskLow:    "Χαμηλός κίνδυνος",
+    riskMed:    "Μέτριος κίνδυνος",
+    riskHigh:   "Υψηλός κίνδυνος",
+    generatedOn: "Δημιουργήθηκε",
+    verifySources: "Επαλήθευση από επίσημες πηγές",
+    verifySubtitle: "Πάντα επιβεβαιώνετε πριν ταξιδέψετε",
+    paywallCta: "Πλήρης πρόσβαση — €5/μήνα",
+    paywallCtaDesc: "Έχετε χρησιμοποιήσει όλα τα δωρεάν ερωτήματα.",
+    errorTitle: "Η ανάλυση απέτυχε",
+    errorSub:   "Δοκιμάστε ξανά",
+    errorBody:  "Κάτι πήγε στραβά. Ελέγξτε το κλειδί API και τη σύνδεσή σας, και δοκιμάστε ξανά.",
+    noKeyTitle: "Απαιτείται κλειδί API",
+    noKeyBody:  "Εισάγετε το κλειδί Anthropic API στο πάνελ ρύθμισης για να ξεκινήσετε.",
+  }
+};
+
+const COUNTRIES = [
+  "Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia",
+  "Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium",
+  "Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria",
+  "Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Central African Republic",
+  "Chad","Chile","China","Colombia","Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus",
+  "Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador",
+  "Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon",
+  "Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana",
+  "Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy",
+  "Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan","Laos","Latvia",
+  "Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi",
+  "Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia",
+  "Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal",
+  "Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway",
+  "Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines",
+  "Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia",
+  "Saint Vincent and the Grenadines","Samoa","San Marino","Saudi Arabia","Senegal","Serbia",
+  "Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia",
+  "South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden",
+  "Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga",
+  "Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine",
+  "United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu",
+  "Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"
+];
+
+/* ───────────────────────────────────
+   STATE
+─────────────────────────────────── */
+let lang = localStorage.getItem('pasport_lang') || 'en';
+let purpose = '';
+let queriesUsed = parseInt(localStorage.getItem('pq3') || '0');
+const FREE_LIMIT = 3;
+
+function t(key) { return T[lang][key] || T.en[key] || ''; }
+
+/* ───────────────────────────────────
+   RENDER UI TEXT (i18n)
+─────────────────────────────────── */
+function applyTranslations() {
+  document.documentElement.lang = lang === 'gr' ? 'el' : 'en';
+
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const key = el.getAttribute('data-t');
+    const val = t(key);
+    if (val) el.innerHTML = val;
+  });
+
+  document.querySelectorAll('[data-t-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-t-placeholder');
+    const val = t(key);
+    if (val) el.placeholder = val;
+  });
+
+  // Purpose chips
+  const chipsEl = document.getElementById('chips');
+  chipsEl.innerHTML = '';
+  const purposes = t('purposes');
+  purposes.forEach((p, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (i === 0 ? ' on' : '');
+    btn.textContent = p;
+    btn.onclick = () => setPurpose(btn, p);
+    chipsEl.appendChild(btn);
+  });
+  purpose = purposes[0];
+
+  // How it works
+  const howGrid = document.getElementById('howGrid');
+  howGrid.innerHTML = '';
+  t('howSteps').forEach(step => {
+    const card = document.createElement('div');
+    card.className = 'how-card';
+    card.innerHTML = `<div class="how-num">${step.num}</div><h3>${step.title}</h3><p>${step.body}</p>`;
+    howGrid.appendChild(card);
+  });
+
+  // Trust strip
+  const trustEl = document.getElementById('trustStrip');
+  trustEl.innerHTML = '';
+  t('trust').forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'trust-item';
+    div.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>${item}`;
+    trustEl.appendChild(div);
+  });
+
+  // Paywall features
+  const pwFeats = document.getElementById('pwFeats');
+  pwFeats.innerHTML = t('pwFeats').map(f => `<li>${f}</li>`).join('');
+
+  // Lang buttons
+  document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+  document.getElementById('btnGR').classList.toggle('active', lang === 'gr');
+
+  updateDots();
+}
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('pasport_lang', l);
+  applyTranslations();
+}
+
+/* ───────────────────────────────────
+   COUNTRY DROPDOWNS
+─────────────────────────────────── */
+function populateSelects() {
+  ['passport','from','to','via'].forEach(id => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = '';
+    const placeholders = {
+      passport: { en: 'Select passport…',      gr: 'Επιλέξτε διαβατήριο…' },
+      from:     { en: 'Departure country…',    gr: 'Χώρα αναχώρησης…' },
+      to:       { en: 'Destination…',          gr: 'Προορισμός…' },
+      via:      { en: 'None / Direct…',        gr: 'Χωρίς διέλευση…' }
+    };
+    const opt0 = document.createElement('option');
+    opt0.value = ''; opt0.textContent = placeholders[id][lang] || placeholders[id].en;
+    sel.appendChild(opt0);
+    COUNTRIES.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+/* ───────────────────────────────────
+   API KEY MANAGEMENT
+─────────────────────────────────── */
+function getKey() { return localStorage.getItem('pasport_key') || ''; }
+function saveKey() {
+  const k = document.getElementById('apiKeyInput').value.trim();
+  if (!k.startsWith('sk-ant')) { alert('That doesn\'t look like a valid Anthropic key.'); return; }
+  localStorage.setItem('pasport_key', k);
+  document.getElementById('setupBanner').classList.remove('visible');
+  document.getElementById('apiKeyInput').value = '';
+  alert(lang === 'gr' ? 'Κλειδί αποθηκεύτηκε!' : 'Key saved!');
+}
+function checkKey() {
+  if (!getKey()) document.getElementById('setupBanner').classList.add('visible');
+}
+
+/* ───────────────────────────────────
+   DOTS
+─────────────────────────────────── */
+function updateDots() {
+  for (let i = 0; i < 3; i++) {
+    document.getElementById('d' + i).classList.toggle('used', i < queriesUsed);
+  }
+}
+
+/* ───────────────────────────────────
+   PURPOSE CHIPS
+─────────────────────────────────── */
+function setPurpose(el, val) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  purpose = val;
+}
+
+/* ───────────────────────────────────
+   PAYWALL
+─────────────────────────────────── */
+function showPaywall() {
+  const pw = document.getElementById('paywallWrap');
+  pw.classList.add('visible');
+  pw.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* ───────────────────────────────────
+   STATUS MAP
+─────────────────────────────────── */
+const STATUS = {
+  ok:   { bg:'#EAF3E6', color:'#1A5C3A', icon:'✓' },
+  warn: { bg:'#FEF3E2', color:'#92500A', icon:'!' },
+  bad:  { bg:'#FEF2F2', color:'#8B1E1E', icon:'✕' },
+  info: { bg:'#EEF4FB', color:'#1A3D5C', icon:'i' }
+};
+const RISK_CLASS = { low:'ok', medium:'warn', high:'bad' };
+
+/* ───────────────────────────────────
+   MAIN ANALYSIS
+─────────────────────────────────── */
+async function analyze() {
+  const apiKey  = getKey();
+  const passport = document.getElementById('passport').value;
+  const from     = document.getElementById('from').value;
+  const to       = document.getElementById('to').value;
+  const via      = document.getElementById('via').value;
+  const ctx      = document.getElementById('ctx').value.trim();
+
+  if (!apiKey) {
+    checkKey();
+    document.getElementById('setupBanner').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  if (!passport || !to) {
+    alert(lang === 'gr'
+      ? 'Παρακαλώ επιλέξτε τουλάχιστον διαβατήριο και προορισμό.'
+      : 'Please select at least your passport and destination.');
+    return;
+  }
+  if (queriesUsed >= FREE_LIMIT) { showPaywall(); return; }
+
+  queriesUsed++;
+  localStorage.setItem('pq3', queriesUsed);
+  updateDots();
+
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  document.getElementById('resultsWrap').innerHTML = '';
+  document.getElementById('resultsWrap').classList.remove('visible');
+  document.getElementById('paywallWrap').classList.remove('visible');
+  document.getElementById('loadingWrap').classList.add('visible');
+
+  const msgs = t('loadingMsgs');
+  let mi = 0;
+  const msgEl = document.getElementById('spinMsg');
+  msgEl.textContent = msgs[0];
+  const iv = setInterval(() => { mi = (mi + 1) % msgs.length; msgEl.textContent = msgs[mi]; }, 1900);
+
+  const tripText = [
+    `Passport/Nationality: ${passport}`,
+    from ? `Departing from: ${from}` : null,
+    `Destination: ${to}`,
+    via ? `Transiting via: ${via}` : null,
+    `Purpose of travel: ${purpose}`,
+    ctx ? `Additional context: ${ctx}` : null
+  ].filter(Boolean).join('\n');
+
+  const responseLang = lang === 'gr' ? 'Greek (Ελληνικά)' : 'English';
+
+  const systemPrompt = `You are Pasport, a precise and trustworthy travel intelligence agent used by travelers worldwide.
+
+IMPORTANT: Respond in ${responseLang}. All text in the JSON values must be in ${responseLang}.
+
+Return ONLY a valid JSON object — no markdown fences, no preamble, no explanation — with this exact schema:
+{
+  "summary": {
+    "riskLevel": "low | medium | high",
+    "headline": "one concise sentence summarizing the situation"
+  },
+  "sections": [
+    {
+      "id": "visa",
+      "title": "Section title",
+      "status": "ok | warn | bad | info",
+      "statusLabel": "e.g. Visa-free 90 days",
+      "content": "Detailed, specific paragraph(s). Include duration, conditions, application process if required.",
+      "checklist": ["Document or action item", "Another item"]
+    },
+    {
+      "id": "transit",
+      "title": "Transit",
+      "status": "ok | warn | bad | info",
+      "statusLabel": "label",
+      "content": "Transit visa requirements, airside transit rules, connection time minimums. If direct flight, say so.",
+      "checklist": []
+    },
+    {
+      "id": "entry",
+      "title": "Entry conditions",
+      "status": "ok | warn | bad | info",
+      "statusLabel": "label",
+      "content": "Passport validity (months required), return ticket, proof of funds, accommodation, biometrics, ETA/ETIAS/ESTA if applicable.",
+      "checklist": ["item"]
+    },
+    {
+      "id": "health",
+      "title": "Health & safety",
+      "status": "ok | warn | bad | info",
+      "statusLabel": "label",
+      "content": "Required vaccinations, recommended vaccinations, current travel advisories from EU/US/UK governments, any active conflicts or health emergencies.",
+      "checklist": []
+    },
+    {
+      "id": "tips",
+      "title": "Practical tips",
+      "status": "info",
+      "statusLabel": "Recommended",
+      "content": "Currency, language, emergency numbers, useful apps, cultural notes, any specific advice relevant to this route and passport combination.",
+      "checklist": []
+    }
+  ]
+}
+
+Rules:
+- Be specific and accurate. If uncertain about current rules, say so clearly and urge the user to verify with the relevant embassy.
+- Never invent visa policies or entry rules.
+- Keep each section's content to 2-4 sentences of dense, useful information.
+- checklist items should be short (under 10 words each), actionable, specific.
+- Return ONLY the JSON object. Nothing else.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-calls': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1200,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: `Analyze this trip:\n${tripText}` }]
+      })
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error?.message || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    const raw = data.content?.find(b => b.type === 'text')?.text || '';
+    const cleaned = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(cleaned);
+
+    clearInterval(iv);
+    document.getElementById('loadingWrap').classList.remove('visible');
+    renderResults(parsed, { passport, from, to, via });
+
+  } catch (err) {
+    clearInterval(iv);
+    document.getElementById('loadingWrap').classList.remove('visible');
+    const s = STATUS.bad;
+    document.getElementById('resultsWrap').innerHTML = `
+      <div class="r-card">
+        <div class="r-head">
+          <div class="r-ico" style="background:${s.bg};color:${s.color}">${s.icon}</div>
+          <div>
+            <div class="r-tit">${t('errorTitle')}</div>
+            <div class="r-sub">${t('errorSub')}</div>
+          </div>
+        </div>
+        <div class="r-body"><p>${t('errorBody')}</p><p style="margin-top:8px;font-size:12.5px;color:var(--text-3)">Error: ${err.message}</p></div>
+      </div>`;
+    document.getElementById('resultsWrap').classList.add('visible');
+  }
+
+  btn.disabled = false;
+}
+
+/* ───────────────────────────────────
+   RENDER RESULTS
+─────────────────────────────────── */
+function renderResults(data, trip) {
+  const riskKey = RISK_CLASS[data.summary?.riskLevel] || 'info';
+  const sm = STATUS[riskKey];
+  const riskLabel = t('risk' + data.summary?.riskLevel?.charAt(0).toUpperCase() + data.summary?.riskLevel?.slice(1)) || data.summary?.riskLevel;
+
+  let html = '';
+
+  // Summary card
+  const segs = [
+    { v: trip.passport, l: t('segPassport') },
+    trip.from ? { v: trip.from, l: t('segFrom') } : null,
+    { v: trip.to, l: t('segTo') },
+    trip.via ? { v: trip.via, l: t('segVia') } : null,
+    { v: purpose, l: t('segPurpose') }
+  ].filter(Boolean);
+
+  html += `
+    <div class="r-card" style="animation-delay:0s">
+      <div class="r-head">
+        <div class="r-ico" style="background:${sm.bg};color:${sm.color};font-weight:600">${sm.icon}</div>
+        <div>
+          <div class="r-tit">${trip.passport} → ${trip.to}</div>
+          <div class="r-sub">${data.summary?.headline || ''}</div>
+        </div>
+        <div class="pill ${riskKey}">${riskLabel}</div>
+      </div>
+      <div class="r-body">
+        <div class="sumbar">
+          ${segs.map(s => `<div class="seg"><div class="seg-v">${s.v}</div><div class="seg-l">${s.l}</div></div>`).join('')}
+        </div>
+        <p style="font-size:11.5px;color:var(--text-3)">${t('generatedOn')} ${new Date().toLocaleDateString(lang === 'gr' ? 'el-GR' : 'en-GB', { day:'numeric', month:'long', year:'numeric' })}. ${t('disclaimer')}</p>
+      </div>
+    </div>`;
+
+  // Section cards
+  (data.sections || []).forEach((sec, i) => {
+    const s = STATUS[sec.status || 'info'];
+    const checks = (sec.checklist || []).map(item =>
+      `<li><div class="chk-dot"></div>${item}</li>`
+    ).join('');
+
+    html += `
+      <div class="r-card" style="animation-delay:${(i + 1) * 0.07}s">
+        <div class="r-head">
+          <div class="r-ico" style="background:${s.bg};color:${s.color};font-weight:600;font-size:13px">${s.icon}</div>
+          <div><div class="r-tit">${sec.title}</div></div>
+          <div class="pill ${sec.status || 'info'}">${sec.statusLabel || ''}</div>
+        </div>
+        <div class="r-body">
+          ${(sec.content || '').split('\n').filter(p => p.trim()).map(p => `<p>${p}</p>`).join('')}
+          ${checks ? `<ul class="chk" style="margin-top:10px">${checks}</ul>` : ''}
+        </div>
+      </div>`;
+  });
+
+  // Official sources reminder
+  html += `
+    <div class="r-card" style="animation-delay:${(data.sections?.length + 1) * 0.07}s">
+      <div class="r-head">
+        <div class="r-ico" style="background:var(--info-bg);color:var(--info);font-size:12px;font-weight:600">↗</div>
+        <div>
+          <div class="r-tit">${t('verifySources')}</div>
+          <div class="r-sub">${t('verifySubtitle')}</div>
+        </div>
+      </div>
+      <div class="r-body">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+          <a href="https://www.iatatravelcentre.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:100px;background:var(--bg);border:1px solid var(--border-med);font-size:12px;color:var(--text-2);text-decoration:none;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border-med)';this.style.color='var(--text-2)'">↗ IATA Travel Centre</a>
+          <a href="https://visadb.io" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:100px;background:var(--bg);border:1px solid var(--border-med);font-size:12px;color:var(--text-2);text-decoration:none;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border-med)';this.style.color='var(--text-2)'">↗ VisaDB</a>
+          <a href="https://www.sherpapower.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:100px;background:var(--bg);border:1px solid var(--border-med);font-size:12px;color:var(--text-2);text-decoration:none;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border-med)';this.style.color='var(--text-2)'">↗ Sherpa</a>
+          <a href="https://travel.state.gov" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:100px;background:var(--bg);border:1px solid var(--border-med);font-size:12px;color:var(--text-2);text-decoration:none;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border-med)';this.style.color='var(--text-2)'">↗ US State Dept</a>
+        </div>
+      </div>
+    </div>`;
+
+  // Paywall CTA if limit reached
+  if (queriesUsed >= FREE_LIMIT) {
+    html += `
+      <div class="r-card" style="animation-delay:${(data.sections?.length + 2) * 0.07}s">
+        <div class="r-body" style="text-align:center;padding:1.75rem">
+          <p style="margin-bottom:1rem;font-size:13.5px">${t('paywallCtaDesc')}</p>
+          <button class="run-btn" style="max-width:260px;margin:0 auto" onclick="showPaywall()">${t('paywallCta')}</button>
+        </div>
+      </div>`;
+  }
+
+  const wrap = document.getElementById('resultsWrap');
+  wrap.innerHTML = html;
+  wrap.classList.add('visible');
+  setTimeout(() => wrap.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+/* ───────────────────────────────────
+   INIT
+─────────────────────────────────── */
+populateSelects();
+applyTranslations();
+checkKey();
+</script>
+</body>
+</html>
