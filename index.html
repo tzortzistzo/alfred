@@ -6,7 +6,7 @@
 <meta name="description" content="Alfred — Your personal trip document assistant.">
 <title>Alfred</title>
 <script>window.CLERK_PUBLISHABLE_KEY = "pk_live_Y2xlcmsudHpvcnR6aXN0em8uZ2l0aHViLmlvJA";</script>
-<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
+<script src="https://clerk.tzortzistzo.github.io/npm/@clerk/clerk-js@5/dist/clerk.browser.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
@@ -872,17 +872,35 @@ var currentUser = null;
 
 async function initClerk() {
   try {
-    const clerk = window.Clerk;
-    if (!clerk) return;
-    await clerk.load({ publishableKey: window.CLERK_PUBLISHABLE_KEY });
+    // Wait for Clerk script to load (up to 10 seconds)
+    if (!window.Clerk) {
+      await new Promise(function(resolve, reject) {
+        var elapsed = 0;
+        var check = setInterval(function() {
+          elapsed += 100;
+          if (window.Clerk) { clearInterval(check); resolve(); }
+          else if (elapsed >= 10000) {
+            clearInterval(check);
+            reject(new Error("Clerk script did not load after 10s"));
+          }
+        }, 100);
+      });
+    }
+    await window.Clerk.load({ publishableKey: window.CLERK_PUBLISHABLE_KEY });
     clerkReady = true;
-    updateAuthUI(clerk.user);
-    clerk.addListener(function(resources) {
+    updateAuthUI(window.Clerk.user);
+    window.Clerk.addListener(function(resources) {
       currentUser = resources.user;
       updateAuthUI(resources.user);
     });
+    if (!currentUser) {
+      document.getElementById("signInNavBtn").style.display = "block";
+    }
   } catch(e) {
-    console.warn("Clerk init failed:", e);
+    console.error("Clerk init failed — search locked:", e);
+    // Do NOT allow search — show a message instead
+    document.getElementById("runBtn").disabled = true;
+    document.getElementById("runBtnText").textContent = "Sign in required — please refresh the page";
   }
 }
 
@@ -942,7 +960,11 @@ async function signOut() {
 // Override analyze to require login
 var _originalAnalyze = analyze;
 function analyze() {
-  if (clerkReady && !currentUser) {
+  if (!clerkReady) {
+    document.getElementById("runBtnText").textContent = "Loading auth — please wait...";
+    return;
+  }
+  if (!currentUser) {
     showAuthModal();
     return;
   }
