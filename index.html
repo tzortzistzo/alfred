@@ -305,6 +305,8 @@ const ETA_COUNTRIES = {
   "New Zealand": {text:"NZeTA required (NZD 23). Apply at immigration.govt.nz before travel.", url:"https://www.immigration.govt.nz/new-zealand-visas/visas/visa/nzeta"}
 };
 
+var WORKER_URL = "https://alfred-proxy.tzosarakatsanis.workers.dev";
+
 let lang = localStorage.getItem("alfred_lang") || "en";
 let purpose = "";
 // Store resolved country values separate from display text
@@ -631,6 +633,7 @@ function renderResults({passport, from, to, via, result}) {
         </tr>
         ${via ? `<tr><td>${t("rowTransit")}</td><td>${transitStr}</td></tr>` : ""}
         ${notesRow}
+        ${result.entry_form ? `<tr><td>${lang==="gr"?"Έντυπο εισόδου":"Entry/exit form"}</td><td class="v-red">${result.entry_form}</td></tr>` : ""}
       </table>
     </div>
 
