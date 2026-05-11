@@ -69,7 +69,7 @@ h1 em{font-style:italic;color:var(--accent)}
 .tl-dot.red{background:#DC2626}
 /* Route bar */
 .route-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:14px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:10px;animation:up .3s ease .05s both}
-.route-label{font-size:16px;font-weight:500;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+.route-label{font-size:14px;font-weight:500;letter-spacing:-0.01em;display:flex;align-items:center;gap:8px}
 .route-arr{color:var(--text3);font-size:20px;font-weight:300}
 .sbadge{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:100px;font-size:13px;font-weight:500}
 .sbadge.ok{background:var(--ok-bg);color:var(--ok);border:1px solid rgba(22,101,52,0.15)}
@@ -80,7 +80,7 @@ h1 em{font-style:italic;color:var(--accent)}
 
 /* Info table */
 .info-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);margin-bottom:10px;animation:up .3s ease .1s both}
-.info-head{padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg)}
+.info-head{padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:1rem}
 .info-head span{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase}
 .info-table{width:100%;border-collapse:collapse}
 .info-table tr{border-bottom:1px solid var(--border)}
@@ -733,20 +733,16 @@ function renderResults({passport, from, to, via, result}) {
       <div class="tl-item"><div class="tl-dot green"></div>${t("tlGreen")}</div>
       <div class="tl-item"><div class="tl-dot amber"></div>${t("tlAmber")}</div>
       <div class="tl-item"><div class="tl-dot red"></div>${t("tlRed")}</div>
-    </div>
-    <div style="text-align:right;padding:2px 4px 6px;font-size:11px;color:var(--text3);display:flex;align-items:center;justify-content:flex-end;gap:5px">
-      <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${result.aiSource && !result.fromCache ? '#DC2626' : '#1D4ED8'}"></div>
-      ${result.aiSource && !result.fromCache ? 'Live AI &mdash; charged' : 'Free'}
-    </div>
-
-    <div class="route-bar">
-      <div class="route-label">${routeHtml}</div>
-      <div class="sbadge ${sc.cls}">${pillLbl}</div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)">
+        <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${result.aiSource && !result.fromCache ? '#DC2626' : '#1D4ED8'}"></div>
+        ${result.aiSource && !result.fromCache ? 'Live AI &mdash; charged' : 'Free'}
+      </div>
     </div>
 
     <div class="info-card">
-      <div class="info-head">
-        <span>${passport} · ${t("purpose")}: ${purpose}</span>
+      <div class="info-head" style="display:flex;align-items:center;justify-content:space-between">
+        <span>${routeHtml}</span>
+        <div class="sbadge ${sc.cls}">${pillLbl}</div>
       </div>
       <table class="info-table">
         <tr>
