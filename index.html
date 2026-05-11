@@ -326,9 +326,11 @@ function setupAC(inputId, listId, fieldKey) {
 
   function showList(items, query) {
     if (!items.length) { list.classList.remove("open"); return; }
-    list.innerHTML = items.map((c,i) =>
-      `<div class="ac-item" data-val="${c}" data-idx="${i}">${highlight(c, query)}</div>`
-    ).join("");
+    list.innerHTML = items.map((item,i) => {
+      const label = typeof item === 'object' ? item.label : item;
+      const value = typeof item === 'object' ? item.value : item;
+      return `<div class="ac-item" data-val="${value}" data-idx="${i}">${highlight(label, query)}</div>`;
+    }).join("");
     list.classList.add("open");
     hiIdx = -1;
   }
