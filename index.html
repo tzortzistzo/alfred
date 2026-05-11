@@ -263,6 +263,18 @@ const T = {
 const SCHENGEN = ["Austria","Belgium","Croatia","Czech Republic","Denmark","Estonia","Finland","France","Germany","Greece","Hungary","Iceland","Italy","Latvia","Liechtenstein","Lithuania","Luxembourg","Malta","Netherlands","Norway","Poland","Portugal","Slovakia","Slovenia","Spain","Sweden","Switzerland"];
 const EU = [...SCHENGEN,"Bulgaria","Cyprus","Ireland","Romania"];
 
+// US Visa Waiver Program countries — ONLY these can use ESTA
+const VWP = ["Andorra","Australia","Austria","Belgium","Brunei","Chile","Croatia","Czech Republic","Denmark","Estonia","Finland","France","Germany","Greece","Hungary","Iceland","Ireland","Italy","Japan","South Korea","Latvia","Liechtenstein","Lithuania","Luxembourg","Malta","Monaco","Netherlands","New Zealand","Norway","Poland","Portugal","San Marino","Singapore","Slovakia","Slovenia","Spain","Sweden","Switzerland","Taiwan","United Kingdom"];
+
+// UK ETA eligible countries (broadly similar to VWP + others)
+const UK_ETA_ELIGIBLE = [...VWP,"Bahrain","Jordan","Kuwait","Oman","Qatar","Saudi Arabia","United Arab Emirates","Israel"];
+
+// Australia ETA/eVisitor eligible
+const AU_ETA_ELIGIBLE = [...VWP];
+
+// Canada eTA eligible (broadly VWP countries)
+const CA_ETA_ELIGIBLE = [...VWP];
+
 // ETA countries — these are MANDATORY pre-travel and shown in red
 const ETA_COUNTRIES = {
   "United Kingdom": {text:"UK ETA required (£10). Apply at gov.uk/guidance/apply-for-an-electronic-travel-authorisation-eta before travel.", url:"https://www.gov.uk/guidance/apply-for-an-electronic-travel-authorisation-eta"},
@@ -617,6 +629,8 @@ function buildSherpaUrl(passport, destination) {
 
 function renderResults({passport, from, to, via, result}) {
   const wrap = document.getElementById("results");
+  // Normalize via to country name using resolveInput
+  if (via) via = resolveInput(via) || via;
   wrap.innerHTML = "";
 
   if (!result) {
@@ -671,10 +685,22 @@ function renderResults({passport, from, to, via, result}) {
     if (result.transit === "visa_required") {
       transitStr = `<span class="v-red">${t("transitReq")}</span>${result.transit_note ? " — " + result.transit_note : ""}`;
     } else {
-      // Check if transit country requires ETA even for transit
-      const viaEta = ETA_COUNTRIES[via];
+      const viaCountry = via; // already normalized above
+      const viaEta = ETA_COUNTRIES[viaCountry];
       if (viaEta) {
-        transitStr = `<span class="v-red">${viaEta.text}</span>`;
+        // Check passport eligibility for this transit country's ETA/ESTA
+        let eligible = false;
+        if (viaCountry === "United States") eligible = VWP.includes(passport);
+        else if (viaCountry === "United Kingdom") eligible = UK_ETA_ELIGIBLE.includes(passport);
+        else if (viaCountry === "Australia") eligible = AU_ETA_ELIGIBLE.includes(passport);
+        else if (viaCountry === "Canada") eligible = CA_ETA_ELIGIBLE.includes(passport);
+        else eligible = true;
+
+        if (eligible) {
+          transitStr = `<span class="v-red">${viaEta.text}</span>`;
+        } else {
+          transitStr = `<span class="v-red">Transit visa required for ${viaCountry} — ${passport} passport holders are not eligible for ESTA/ETA. Apply at the ${viaCountry} consulate before travel.</span>`;
+        }
       } else {
         transitStr = `<span class="v-green">${t("transitOk")}</span>`;
       }
