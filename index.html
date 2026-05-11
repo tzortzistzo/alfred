@@ -519,7 +519,8 @@ function analyze() {
             passport_validity: data.passport_validity_months || 6,
             insurance:'recommended', insurance_note:'Recommended for all international travel.',
             entry_form: data.entry_form || '',
-            aiSource: true
+            aiSource: true,
+            fromCache: data.cached === true
           }});
         }
       })
@@ -583,7 +584,8 @@ function analyze() {
           insurance: 'recommended',
           insurance_note: 'Recommended for all international travel.',
           entry_form: data.entry_form || '',
-          aiSource: true
+          aiSource: true,
+          fromCache: data.cached === true
         };
         renderResults({passport, from, to, via, result: aiResult});
       }
