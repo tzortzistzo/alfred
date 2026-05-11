@@ -735,8 +735,8 @@ function renderResults({passport, from, to, via, result}) {
       <div class="tl-item"><div class="tl-dot red"></div>${t("tlRed")}</div>
     </div>
     <div style="text-align:right;padding:2px 4px 6px;font-size:11px;color:var(--text3);display:flex;align-items:center;justify-content:flex-end;gap:5px">
-      <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${result.fromCache ? '#1D4ED8' : result.aiSource ? '#DC2626' : '#9498A8'}"></div>
-      ${result.fromCache ? 'Cached &mdash; free' : result.aiSource ? 'Live AI &mdash; charged' : 'Database &mdash; free'}
+      <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${result.aiSource && !result.fromCache ? '#DC2626' : '#1D4ED8'}"></div>
+      ${result.aiSource && !result.fromCache ? 'Live AI &mdash; charged' : 'Free'}
     </div>
 
     <div class="route-bar">
