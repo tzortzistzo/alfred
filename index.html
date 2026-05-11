@@ -286,15 +286,29 @@ function filterCountries(query) {
   const q = query.trim().toUpperCase();
   const qLow = query.trim().toLowerCase();
   const results = [];
-  // Code match first
-  if (CODE_MAP[q]) results.push(CODE_MAP[q]);
-  // Name match
-  COUNTRIES.forEach(c => {
-    if (c !== CODE_MAP[q] && c.toLowerCase().startsWith(qLow)) results.push(c);
+  const seen = new Set();
+  function add(label, value) {
+    if (!seen.has(value)) { seen.add(value); results.push({label, value}); }
+  }
+  // Exact airport code match
+  if (AIRPORTS[q]) add(AIRPORTS[q].c + ', ' + AIRPORTS[q].n + ' (' + q + ')', AIRPORTS[q].n);
+  // Exact country code match
+  if (CODE_MAP[q]) add(CODE_MAP[q], CODE_MAP[q]);
+  // Airport code starts with query
+  Object.keys(AIRPORTS).forEach(code => {
+    if (code !== q && code.startsWith(q)) {
+      add(AIRPORTS[code].c + ', ' + AIRPORTS[code].n + ' (' + code + ')', AIRPORTS[code].n);
+    }
   });
-  COUNTRIES.forEach(c => {
-    if (!results.includes(c) && c.toLowerCase().includes(qLow)) results.push(c);
+  // Country name starts with query
+  COUNTRIES.forEach(c => { if (c.toLowerCase().startsWith(qLow)) add(c, c); });
+  // Airport city contains query
+  Object.keys(AIRPORTS).forEach(code => {
+    const ap = AIRPORTS[code];
+    if (ap.c.toLowerCase().includes(qLow)) add(ap.c + ', ' + ap.n + ' (' + code + ')', ap.n);
   });
+  // Country name contains query
+  COUNTRIES.forEach(c => { if (c.toLowerCase().includes(qLow)) add(c, c); });
   return results.slice(0, 8);
 }
 
@@ -460,6 +474,44 @@ function analyze() {
   } else {
     const passData = VISA_DB.visaData[passport];
     result = passData ? (passData[to] || null) : null;
+  }
+
+  // If DB has no result, call the worker
+  if (!result && WORKER_URL) {
+    const btn = document.getElementById('runBtn');
+    btn.disabled = true;
+    fetch(WORKER_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({passport: passport, destination: to, purpose: purpose})
+    })
+    .then(r => r.json())
+    .then(data => {
+      btn.disabled = false;
+      if (data.error) {
+        renderResults({passport, from, to, via, result: null});
+      } else {
+        const statusMap = {free:'free',eta:'eta',voa:'voa',evisa:'evisa',required:'required',forbidden:'forbidden'};
+        const aiResult = {
+          status: statusMap[data.status] || 'required',
+          days: data.days || null,
+          notes: data.notes || '',
+          transit: 'ok',
+          transit_note: '',
+          passport_validity: data.passport_validity_months || 6,
+          insurance: 'recommended',
+          insurance_note: 'Recommended for all international travel.',
+          entry_form: data.entry_form || '',
+          aiSource: true
+        };
+        renderResults({passport, from, to, via, result: aiResult});
+      }
+    })
+    .catch(() => {
+      document.getElementById('runBtn').disabled = false;
+      renderResults({passport, from, to, via, result: null});
+    });
+    return;
   }
 
   renderResults({passport, from, to, via, result});
