@@ -126,7 +126,7 @@ h1 em{font-style:italic;color:var(--accent)}
 .trust{max-width:700px;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;gap:2.5rem;flex-wrap:wrap;padding:0 1.25rem}
 .ti{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text3)}
 .sherpa-btn:hover{background:#1e40af !important}
-.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:1.25rem 1.5rem;margin-bottom:12px;animation:up .3s ease .1s both}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid #1D4ED8;border-radius:var(--r);box-shadow:var(--shadow);padding:1.25rem 1.5rem;margin-bottom:12px;animation:up .3s ease .1s both}
 .summary-card p{font-size:14px;color:var(--text2);line-height:1.75;margin:0}
 .summary-card .summary-label{font-size:10.5px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
 @keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(29,78,216,0.4)}50%{box-shadow:0 0 0 5px rgba(29,78,216,0)}}
@@ -751,6 +751,53 @@ function buildSherpaFallbackUrl(passport, destination) {
   return `https://apply.joinsherpa.com/travel-restrictions/${dest}?affiliateId=astortravel&nationality=${nat}&language=en-US`;
 }
 
+const NATIONALITY = {
+  "Afghanistan":"Afghan","Albania":"Albanian","Algeria":"Algerian","Andorra":"Andorran","Angola":"Angolan",
+  "Antigua and Barbuda":"Antiguan","Argentina":"Argentine","Armenia":"Armenian","Australia":"Australian",
+  "Austria":"Austrian","Azerbaijan":"Azerbaijani","Bahamas":"Bahamian","Bahrain":"Bahraini",
+  "Bangladesh":"Bangladeshi","Barbados":"Barbadian","Belarus":"Belarusian","Belgium":"Belgian",
+  "Belize":"Belizean","Benin":"Beninese","Bhutan":"Bhutanese","Bolivia":"Bolivian",
+  "Bosnia and Herzegovina":"Bosnian","Botswana":"Botswanan","Brazil":"Brazilian","Brunei":"Bruneian",
+  "Bulgaria":"Bulgarian","Burkina Faso":"Burkinabe","Burundi":"Burundian","Cambodia":"Cambodian",
+  "Cameroon":"Cameroonian","Canada":"Canadian","Cape Verde":"Cape Verdean","Chad":"Chadian",
+  "Chile":"Chilean","China":"Chinese","Colombia":"Colombian","Comoros":"Comorian","Congo":"Congolese",
+  "Costa Rica":"Costa Rican","Croatia":"Croatian","Cuba":"Cuban","Cyprus":"Cypriot",
+  "Czech Republic":"Czech","Denmark":"Danish","Djibouti":"Djiboutian","Dominican Republic":"Dominican",
+  "Ecuador":"Ecuadorian","Egypt":"Egyptian","El Salvador":"Salvadoran","Eritrea":"Eritrean",
+  "Estonia":"Estonian","Eswatini":"Swati","Ethiopia":"Ethiopian","Fiji":"Fijian","Finland":"Finnish",
+  "France":"French","Gabon":"Gabonese","Gambia":"Gambian","Georgia":"Georgian","Germany":"German",
+  "Ghana":"Ghanaian","Greece":"Greek","Guatemala":"Guatemalan","Guinea":"Guinean","Guyana":"Guyanese",
+  "Haiti":"Haitian","Honduras":"Honduran","Hungary":"Hungarian","Iceland":"Icelandic","India":"Indian",
+  "Indonesia":"Indonesian","Iran":"Iranian","Iraq":"Iraqi","Ireland":"Irish","Israel":"Israeli",
+  "Italy":"Italian","Jamaica":"Jamaican","Japan":"Japanese","Jordan":"Jordanian","Kazakhstan":"Kazakh",
+  "Kenya":"Kenyan","Kuwait":"Kuwaiti","Kyrgyzstan":"Kyrgyz","Laos":"Laotian","Latvia":"Latvian",
+  "Lebanon":"Lebanese","Lesotho":"Basotho","Liberia":"Liberian","Libya":"Libyan",
+  "Liechtenstein":"Liechtenstein","Lithuania":"Lithuanian","Luxembourg":"Luxembourgish",
+  "Madagascar":"Malagasy","Malawi":"Malawian","Malaysia":"Malaysian","Maldives":"Maldivian",
+  "Mali":"Malian","Malta":"Maltese","Mauritania":"Mauritanian","Mauritius":"Mauritian",
+  "Mexico":"Mexican","Moldova":"Moldovan","Monaco":"Monegasque","Mongolia":"Mongolian",
+  "Montenegro":"Montenegrin","Morocco":"Moroccan","Mozambique":"Mozambican","Myanmar":"Burmese",
+  "Namibia":"Namibian","Nepal":"Nepali","Netherlands":"Dutch","New Zealand":"New Zealand",
+  "Nicaragua":"Nicaraguan","Niger":"Nigerien","Nigeria":"Nigerian","North Korea":"North Korean",
+  "North Macedonia":"Macedonian","Norway":"Norwegian","Oman":"Omani","Pakistan":"Pakistani",
+  "Panama":"Panamanian","Papua New Guinea":"Papua New Guinean","Paraguay":"Paraguayan","Peru":"Peruvian",
+  "Philippines":"Filipino","Poland":"Polish","Portugal":"Portuguese","Qatar":"Qatari",
+  "Romania":"Romanian","Russia":"Russian","Rwanda":"Rwandan","Saudi Arabia":"Saudi",
+  "Senegal":"Senegalese","Serbia":"Serbian","Singapore":"Singaporean","Slovakia":"Slovak",
+  "Slovenia":"Slovenian","Somalia":"Somali","South Africa":"South African","South Korea":"South Korean",
+  "Spain":"Spanish","Sri Lanka":"Sri Lankan","Sudan":"Sudanese","Sweden":"Swedish",
+  "Switzerland":"Swiss","Syria":"Syrian","Taiwan":"Taiwanese","Tajikistan":"Tajik",
+  "Tanzania":"Tanzanian","Thailand":"Thai","Togo":"Togolese","Trinidad and Tobago":"Trinidadian",
+  "Tunisia":"Tunisian","Turkey":"Turkish","Turkmenistan":"Turkmen","Uganda":"Ugandan",
+  "Ukraine":"Ukrainian","United Arab Emirates":"Emirati","United Kingdom":"British",
+  "United States":"American","Uruguay":"Uruguayan","Uzbekistan":"Uzbek","Venezuela":"Venezuelan",
+  "Vietnam":"Vietnamese","Yemen":"Yemeni","Zambia":"Zambian","Zimbabwe":"Zimbabwean"
+};
+
+function passportAdj(country) {
+  return NATIONALITY[country] || country;
+}
+
 function generateSummary(passport, destination, purpose, result) {
   if (!result) return "";
   const p = passport;
@@ -759,32 +806,32 @@ function generateSummary(passport, destination, purpose, result) {
   const pur = (purpose || "Tourism").toLowerCase();
 
   if (result.status === "free") {
-    if (days) return p + " passport holders enjoy visa-free entry to " + d + " for up to " + days + ". No pre-registration is required — simply ensure your passport remains valid for the duration of your stay.";
-    return p + " passport holders benefit from full freedom of movement to " + d + ". Travel freely with your passport or national identity card, with no restrictions on length of stay.";
+    if (days) return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport, entry to " + d + " is visa-free for up to " + days + ". No pre-registration is required — simply ensure your passport remains valid for the duration of your stay.";
+    return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport, you benefit from full freedom of movement within " + d + ". Travel freely with your passport or national identity card, with no restrictions on length of stay.";
   }
   if (result.status === "eta") {
     const notes = (result.notes || "").toLowerCase();
-    if (notes.includes("esta")) return p + " passport holders may enter the United States without a visa under the Visa Waiver Program. An ESTA authorisation is required before departure — it is valid for two years, with stays of up to 90 days, or until your passport expires, whichever comes first.";
-    if (notes.includes("uk eta") || notes.includes("apply-electronic-travel")) return p + " passport holders are welcome in the United Kingdom without a visa. A UK ETA must be obtained before travel — a straightforward online process that takes only a few minutes to complete.";
-    if (notes.includes("evisitor") || notes.includes("australia")) return p + " passport holders may visit Australia without a visa using the free eVisitor authorisation. Apply online before departure at the Department of Home Affairs website.";
-    if (notes.includes("nzeta")) return p + " passport holders can visit New Zealand without a visa, but must obtain an NZeTA before travel. The application is completed online in minutes and is linked electronically to your passport.";
-    if (notes.includes("k-eta")) return p + " passport holders enjoy visa-free access to South Korea. A K-ETA authorisation is required before boarding — apply online at k-eta.go.kr ahead of your departure.";
-    return p + " passport holders can enter " + d + " without a visa, though a pre-travel authorisation must be secured before departure. The process is completed online and is typically approved within minutes.";
+    if (notes.includes("esta")) return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport, entry to the United States is granted under the Visa Waiver Program. Secure your ESTA before departure — it is valid for two years, covers stays of up to 90 days per visit, or until your passport expires, whichever comes first.";
+    if (notes.includes("uk eta") || notes.includes("apply-electronic-travel")) return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport, the United Kingdom welcomes you without a visa. A UK ETA must be approved before travel — a simple online process that takes only minutes to complete.";
+    if (notes.includes("evisitor") || notes.includes("australia")) return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport, Australia requires a free eVisitor authorisation before departure. Apply online at the Department of Home Affairs — approval is typically granted within minutes.";
+    if (notes.includes("nzeta")) return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport, New Zealand requires an NZeTA before boarding. The application is completed online in minutes and linked electronically to your passport — no stamp or sticker required.";
+    if (notes.includes("k-eta")) return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport, South Korea grants visa-free entry with a K-ETA pre-approval. Apply at k-eta.go.kr before your departure date.";
+    return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport, entry to " + d + " is visa-free — however a pre-travel authorisation must be secured before departure. The process is completed online and is typically approved within minutes.";
   }
   if (result.status === "voa") {
-    return p + " passport holders may obtain a visa on arrival upon reaching " + d + ". Have the applicable fee ready and ensure your passport is valid for at least six months beyond your intended stay.";
+    return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport, a visa is available on arrival in " + d + ". Have the applicable fee ready in cash and ensure your passport is valid for at least six months beyond your intended stay.";
   }
   if (result.status === "evisa") {
-    return p + " passport holders require an e-Visa to enter " + d + ". Applications are submitted online before departure — a straightforward process that can be completed from home well in advance of travel.";
+    return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport, an e-Visa is required before entering " + d + ". The application is submitted online from home — a straightforward process best completed well in advance of your departure date.";
   }
   if (result.status === "required") {
-    if (pur === "work") return "A work visa is required for " + d + " regardless of nationality — tourist agreements do not apply to employment. Allow ample time and contact the " + d + " embassy to begin the process well ahead of your planned departure.";
-    if (pur === "study") return "A student visa is required for " + d + ". Contact the " + d + " embassy or consulate to confirm the specific documents and processing times needed for your institution and programme.";
-    if (pur === "residence") return "A residence permit or long-stay visa is required for " + d + ". Requirements vary significantly — consult the " + d + " embassy well in advance and seek professional immigration advice where appropriate.";
-    return p + " passport holders require a visa to enter " + d + ". The application must be submitted to the " + d + " embassy or consulate before travel — allow sufficient time for processing.";
+    if (pur === "work") return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport and intending to work in " + d + " requires a work visa — tourist arrangements do not apply to employment. Contact the " + d + " embassy well ahead of your planned start date to begin the process.";
+    if (pur === "study") return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport to study in " + d + " requires a student visa before departure. Contact the " + d + " embassy or consulate to confirm the documents and processing times required for your institution.";
+    if (pur === "residence") return "Establishing residence in " + d + " on a " + p + " passport requires a long-stay visa or residence permit. Requirements vary considerably — consult the " + d + " embassy well in advance and consider seeking professional immigration advice.";
+    return (["A","E","I","O","U"].includes((passportAdj(p)||"")[0]) ? "Travelling on an " : "Travelling on a ") + passportAdj(p) + " passport, a visa is required to enter " + d + ". The application must be submitted to the " + d + " embassy or consulate before departure — allow sufficient time for processing.";
   }
   if (result.status === "forbidden") {
-    return "Entry to " + d + " is not currently permitted for " + p + " passport holders. Please verify the current situation with official government sources before making any travel arrangements.";
+    return "Entry to " + d + " is not currently available for " + p + " passport holders. Verify the current situation through official government channels before making any travel arrangements.";
   }
   return "";
 }
@@ -1010,14 +1057,16 @@ function renderResults({passport, from, to, via, result}) {
     const dotColor = (result.aiSource && !result.fromCache) ? '#DC2626' : '#1D4ED8';
     const dotLabel = (result.aiSource && !result.fromCache) ? 'Live AI &mdash; charged' : 'Free';
     summaryDiv.innerHTML =
-      "<div style=\"display:flex;align-items:center;justify-content:space-between;margin-bottom:6px\">" +
+      "<div style=\"display:flex;align-items:center;justify-content:space-between;margin-bottom:8px\">" +
         "<div class=\"summary-label\" style=\"margin-bottom:0\">Alfred\'s note</div>" +
-        "<div style=\"display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)\">" +
-          "<div style=\"width:8px;height:8px;border-radius:50%;background:" + dotColor + ";flex-shrink:0\"></div>" +
-          dotLabel +
-        "</div>" +
+        "<div style=\"display:flex;align-items:center;gap:8px\">" +
+          "<div style=\"display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)\">" +
+            "<div style=\"width:8px;height:8px;border-radius:50%;background:" + dotColor + ";flex-shrink:0\"></div>" +
+            dotLabel +
+          "</div>" +
+          "</div>" +
       "</div>" +
-      "<p>" + summaryText + "</p>";
+      "<p style=\"font-style:italic;color:var(--text2);font-size:13.5px;line-height:1.8\">" + summaryText + "</p>";
     wrap.insertBefore(summaryDiv, wrap.firstChild);
   }
 
