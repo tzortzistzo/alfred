@@ -61,10 +61,10 @@ h1 em{font-style:italic;color:var(--accent)}
 .run-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
 .disc{display:flex;gap:8px;align-items:flex-start;background:var(--warn-bg);border:1px solid rgba(137,85,0,0.12);border-radius:var(--r-xs);padding:10px 13px;margin-top:1rem}
 .disc p{font-size:11.5px;color:var(--warn);line-height:1.55}
-.results-wrap{max-width:700px;margin:0 auto 4rem;padding:0 1.25rem;display:none}
+.results-wrap{max-width:700px;margin:0 auto 2rem;padding:0 1.25rem;display:none}
 .results-wrap.show{display:block}
 /* Traffic light */
-.tl-bar{display:flex;align-items:center;gap:2rem;padding:13px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:10px;animation:up .3s ease both;flex-wrap:wrap}
+.tl-bar{display:flex;align-items:center;gap:2rem;padding:13px 18px;margin-bottom:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:10px;animation:up .3s ease both;flex-wrap:wrap}
 .tl-label{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:0.07em;text-transform:uppercase;margin-right:4px}
 .tl-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text2)}
 .tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
@@ -126,7 +126,7 @@ h1 em{font-style:italic;color:var(--accent)}
 .trust{max-width:700px;margin:0 auto 3rem;display:flex;align-items:center;justify-content:center;gap:2.5rem;flex-wrap:wrap;padding:0 1.25rem}
 .ti{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text3)}
 .sherpa-btn:hover{background:#1e40af !important}
-.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:1.25rem 1.5rem;margin-top:8px;margin-bottom:8px;animation:up .3s ease .25s both}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:1.25rem 1.5rem;margin-bottom:12px;animation:up .3s ease .1s both}
 .summary-card p{font-size:14px;color:var(--text2);line-height:1.75;margin:0}
 .summary-card .summary-label{font-size:10.5px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
 @keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(29,78,216,0.4)}50%{box-shadow:0 0 0 5px rgba(29,78,216,0)}}
@@ -1022,7 +1022,7 @@ function renderResults({passport, from, to, via, result}) {
   }
 
   wrap.classList.add("show");
-  setTimeout(() => wrap.scrollIntoView({behavior:"smooth",block:"start"}), 80);
+  setTimeout(() => { const first = wrap.firstChild; if (first) first.scrollIntoView({behavior:"smooth",block:"start"}); else wrap.scrollIntoView({behavior:"smooth",block:"start"}); }, 80);
 }
 
 // ── MENU ─────────────────────────────────────────────
