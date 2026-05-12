@@ -284,6 +284,21 @@ const ETA_COUNTRIES = {
   "New Zealand": {text:"NZeTA required (NZD 23). Apply at immigration.govt.nz before travel.", url:"https://www.immigration.govt.nz/new-zealand-visas/visas/visa/nzeta"}
 };
 
+const ENTRY_FORMS = {
+  "Thailand": "Thailand Digital Arrival Card (TDAC) mandatory — complete free at tdac.immigration.go.th before arrival.",
+  "Philippines": "eTravel registration required — register free at etravel.gov.ph before departure.",
+  "Singapore": "SG Arrival Card required — complete free at ica.gov.sg/sgarrivalcard within 3 days of arrival.",
+  "India": "e-Arrival Card required — complete at indianvisaonline.gov.in/earrival before departure.",
+  "South Korea": "e-Arrival Card required — complete free at e-arrival.go.kr before departure.",
+  "Cambodia": "e-Arrival Card required — complete free at earrival.gov.kh before departure.",
+  "Malaysia": "Malaysia Digital Arrival Card (MDAC) required — complete free at imigresen-online.imi.gov.my/mdac before arrival.",
+  "China": "Online Arrival Card recommended — complete at s.nia.gov.cn or fill in on arrival.",
+  "Sri Lanka": "Arrival Declaration included with ETA — apply at eta.gov.lk.",
+  "New Zealand": "New Zealand Travel Declaration required — complete at travellerdeclaration.govt.nz.",
+  "Australia": "Incoming Passenger Card required — completed onboard or via ABF SmartGate app.",
+  "Kenya": "e-Visa/eTA includes arrival registration — apply at etakenya.go.ke."
+};
+
 var WORKER_URL = "https://alfred-proxy.tzosarakatsanis.workers.dev";
 
 const lang = "en";
@@ -620,7 +635,23 @@ function analyze() {
 // ── RENDER ────────────────────────────────────────────
 const ISO3 = {"Afghanistan":"AFG","Albania":"ALB","Algeria":"DZA","Andorra":"AND","Angola":"AGO","Antigua and Barbuda":"ATG","Argentina":"ARG","Armenia":"ARM","Australia":"AUS","Austria":"AUT","Azerbaijan":"AZE","Bahamas":"BHS","Bahrain":"BHR","Bangladesh":"BGD","Barbados":"BRB","Belarus":"BLR","Belgium":"BEL","Belize":"BLZ","Benin":"BEN","Bhutan":"BTN","Bolivia":"BOL","Bosnia and Herzegovina":"BIH","Botswana":"BWA","Brazil":"BRA","Brunei":"BRN","Bulgaria":"BGR","Burkina Faso":"BFA","Burundi":"BDI","Cambodia":"KHM","Cameroon":"CMR","Canada":"CAN","Cape Verde":"CPV","Central African Republic":"CAF","Chad":"TCD","Chile":"CHL","China":"CHN","Colombia":"COL","Comoros":"COM","Congo":"COG","Costa Rica":"CRI","Croatia":"HRV","Cuba":"CUB","Cyprus":"CYP","Czech Republic":"CZE","Denmark":"DNK","Djibouti":"DJI","Dominica":"DMA","Dominican Republic":"DOM","Ecuador":"ECU","Egypt":"EGY","El Salvador":"SLV","Equatorial Guinea":"GNQ","Eritrea":"ERI","Estonia":"EST","Eswatini":"SWZ","Ethiopia":"ETH","Fiji":"FJI","Finland":"FIN","France":"FRA","Gabon":"GAB","Gambia":"GMB","Georgia":"GEO","Germany":"DEU","Ghana":"GHA","Greece":"GRC","Grenada":"GRD","Guatemala":"GTM","Guinea":"GIN","Guinea-Bissau":"GNB","Guyana":"GUY","Haiti":"HTI","Honduras":"HND","Hungary":"HUN","Iceland":"ISL","India":"IND","Indonesia":"IDN","Iran":"IRN","Iraq":"IRQ","Ireland":"IRL","Israel":"ISR","Italy":"ITA","Jamaica":"JAM","Japan":"JPN","Jordan":"JOR","Kazakhstan":"KAZ","Kenya":"KEN","Kiribati":"KIR","Kuwait":"KWT","Kyrgyzstan":"KGZ","Laos":"LAO","Latvia":"LVA","Lebanon":"LBN","Lesotho":"LSO","Liberia":"LBR","Libya":"LBY","Liechtenstein":"LIE","Lithuania":"LTU","Luxembourg":"LUX","Madagascar":"MDG","Malawi":"MWI","Malaysia":"MYS","Maldives":"MDV","Mali":"MLI","Malta":"MLT","Marshall Islands":"MHL","Mauritania":"MRT","Mauritius":"MUS","Mexico":"MEX","Micronesia":"FSM","Moldova":"MDA","Monaco":"MCO","Mongolia":"MNG","Montenegro":"MNE","Morocco":"MAR","Mozambique":"MOZ","Myanmar":"MMR","Namibia":"NAM","Nauru":"NRU","Nepal":"NPL","Netherlands":"NLD","New Zealand":"NZL","Nicaragua":"NIC","Niger":"NER","Nigeria":"NGA","North Korea":"PRK","North Macedonia":"MKD","Norway":"NOR","Oman":"OMN","Pakistan":"PAK","Palau":"PLW","Palestine":"PSE","Panama":"PAN","Papua New Guinea":"PNG","Paraguay":"PRY","Peru":"PER","Philippines":"PHL","Poland":"POL","Portugal":"PRT","Qatar":"QAT","Romania":"ROU","Russia":"RUS","Rwanda":"RWA","Saint Kitts and Nevis":"KNA","Saint Lucia":"LCA","Saint Vincent and the Grenadines":"VCT","Samoa":"WSM","San Marino":"SMR","Saudi Arabia":"SAU","Senegal":"SEN","Serbia":"SRB","Seychelles":"SYC","Sierra Leone":"SLE","Singapore":"SGP","Slovakia":"SVK","Slovenia":"SVN","Solomon Islands":"SLB","Somalia":"SOM","South Africa":"ZAF","South Korea":"KOR","South Sudan":"SSD","Spain":"ESP","Sri Lanka":"LKA","Sudan":"SDN","Suriname":"SUR","Sweden":"SWE","Switzerland":"CHE","Syria":"SYR","Taiwan":"TWN","Tajikistan":"TJK","Tanzania":"TZA","Thailand":"THA","Timor-Leste":"TLS","Togo":"TGO","Tonga":"TON","Trinidad and Tobago":"TTO","Tunisia":"TUN","Turkey":"TUR","Turkmenistan":"TKM","Tuvalu":"TUV","Uganda":"UGA","Ukraine":"UKR","United Arab Emirates":"ARE","United Kingdom":"GBR","United States":"USA","Uruguay":"URY","Uzbekistan":"UZB","Vanuatu":"VUT","Vatican City":"VAT","Venezuela":"VEN","Vietnam":"VNM","Yemen":"YEM","Zambia":"ZMB","Zimbabwe":"ZWE"};
 
+function toSlug(name) {
+  // Convert country name to Sherpa URL slug
+  // e.g. "United Kingdom" -> "united-kingdom", "United States" -> "united-states"
+  return name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+}
+
 function buildSherpaUrl(passport, destination) {
+  // For status=eta/evisa/voa/required: link directly to the visa product page
+  // Pattern: apply.joinsherpa.com/visa/[dest-slug]/[passport-slug]-citizens
+  const destSlug = toSlug(destination);
+  const passSlug = toSlug(passport);
+  if (!destSlug || !passSlug) return null;
+  return `https://apply.joinsherpa.com/visa/${destSlug}/${passSlug}-citizens?affiliateId=astortravel&language=en-US`;
+}
+
+function buildSherpaFallbackUrl(passport, destination) {
+  // Fallback to general travel restrictions page with ISO3 codes
   const nat = ISO3[passport];
   const dest = ISO3[destination];
   if (!nat || !dest) return null;
@@ -795,7 +826,7 @@ function renderResults({passport, from, to, via, result}) {
         </tr>
         ${via ? `<tr><td>${t("rowTransit")}</td><td>${transitStr}</td></tr>` : ""}
         ${notesRow}
-        ${result.entry_form ? `<tr><td>${lang==="gr"?"Έντυπο εισόδου":"Entry/exit form"}</td><td class="v-red">${result.entry_form}</td></tr>` : ""}
+        ${(result.entry_form || ENTRY_FORMS[to]) ? `<tr><td>Entry/exit form</td><td class="v-red">${result.entry_form || ENTRY_FORMS[to]}</td></tr>` : ""}
       </table>
     </div>
 
