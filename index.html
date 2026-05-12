@@ -198,14 +198,13 @@ footer a:hover{color:var(--text)}
   </div>
 </div>
 
-<div class="trust" id="trust"></div>
-
 <div class="results-wrap" id="results"></div>
 
 <section class="how">
   <div class="sec-lbl" data-t="howLabel"></div>
   <h2 data-t="howTitle"></h2>
   <div class="how-grid" id="howGrid"></div>
+  <div class="trust" id="trust"></div>
 </section>
 
 <footer>
@@ -285,6 +284,7 @@ const ETA_COUNTRIES = {
   "New Zealand": {text:"NZeTA required (NZD 23). Apply at immigration.govt.nz before travel.", url:"https://www.immigration.govt.nz/new-zealand-visas/visas/visa/nzeta"}
 };
 
+// Mandatory entry forms — shown in red
 const ENTRY_FORMS = {
   "Thailand": "Thailand Digital Arrival Card (TDAC) mandatory — complete free at tdac.immigration.go.th before arrival.",
   "Philippines": "eTravel registration required — register free at etravel.gov.ph before departure.",
@@ -293,11 +293,16 @@ const ENTRY_FORMS = {
   "South Korea": "e-Arrival Card required — complete free at e-arrival.go.kr before departure.",
   "Cambodia": "e-Arrival Card required — complete free at earrival.gov.kh before departure.",
   "Malaysia": "Malaysia Digital Arrival Card (MDAC) required — complete free at imigresen-online.imi.gov.my/mdac before arrival.",
-  "China": "Online Arrival Card recommended — complete at s.nia.gov.cn or fill in on arrival.",
   "Sri Lanka": "Arrival Declaration included with ETA — apply at eta.gov.lk.",
   "New Zealand": "New Zealand Travel Declaration required — complete at travellerdeclaration.govt.nz.",
   "Australia": "Incoming Passenger Card required — completed onboard or via ABF SmartGate app.",
   "Kenya": "e-Visa/eTA includes arrival registration — apply at etakenya.go.ke."
+};
+
+// Recommended (optional) forms — shown in amber
+const ENTRY_FORMS_RECOMMENDED = {
+  "China": "Online Arrival Card available (optional) — complete at s.nia.gov.cn or fill in on arrival.",
+  "Japan": "Visit Japan Web registration recommended (speeds up immigration) — vjw-lp.digital.go.jp."
 };
 
 var WORKER_URL = "https://alfred-proxy.tzosarakatsanis.workers.dev";
@@ -817,20 +822,29 @@ function renderResults({passport, from, to, via, result}) {
         ${stayStr !== "—" ? `<tr><td>${t("rowStay")}</td><td><strong>${stayStr}</strong></td></tr>` : ""}
         ${validityStr !== "—" ? `<tr><td>${t("rowValidity")}</td><td>${validityStr}</td></tr>` : ""}
         ${(() => {
-          const parts = [];
-          // Pre-travel authorisation
+          const redParts = [];
+          const amberParts = [];
+          // Pre-travel authorisation (always mandatory = red)
           if (result.status === "eta") {
-            parts.push(result.notes || (etaInfo ? etaInfo.text : ""));
+            const etaText = result.notes || (etaInfo ? etaInfo.text : "");
+            if (etaText) redParts.push(etaText);
           } else if (result.notes && result.status !== "free") {
-            parts.push(result.notes);
+            redParts.push(result.notes);
           }
-          // Entry/exit form
-          const formText = result.entry_form || ENTRY_FORMS[to];
-          if (formText) parts.push(formText);
-          const filled = parts.filter(p => p);
-          return filled.length > 0
-            ? `<tr><td>Pre-travel &amp; forms</td><td class="v-red">${filled.join(" &nbsp;&nbsp;|&nbsp;&nbsp; ")}</td></tr>`
-            : "";
+          // Mandatory entry form (red)
+          const mandatoryForm = result.entry_form || ENTRY_FORMS[to];
+          if (mandatoryForm) redParts.push(mandatoryForm);
+          // Recommended entry form (amber)
+          const recommendedForm = ENTRY_FORMS_RECOMMENDED[to];
+          if (recommendedForm) amberParts.push(recommendedForm);
+          const rows = [];
+          if (redParts.filter(p=>p).length > 0) {
+            rows.push(`<tr><td>Pre-travel &amp; forms</td><td class="v-red">${redParts.filter(p=>p).join(" &nbsp;|&nbsp; ")}</td></tr>`);
+          }
+          if (amberParts.filter(p=>p).length > 0) {
+            rows.push(`<tr><td>Recommended</td><td class="v-amber">${amberParts.filter(p=>p).join(" &nbsp;|&nbsp; ")}</td></tr>`);
+          }
+          return rows.join("");
         })()}
         <tr>
           <td>${t("rowInsurance")}</td>
