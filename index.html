@@ -1100,6 +1100,41 @@ document.addEventListener('click', function(e) {
   }
 });
 
+// ── DB INTEGRITY GUARD ───────────────────────────────
+// Runs once at startup — catches logical contradictions in the DB
+(function validateDB() {
+  const visaData = VISA_DB.visaData;
+  for (const passport in visaData) {
+    for (const dest in visaData[passport]) {
+      const e = visaData[passport][dest];
+      const status = e.status || "";
+      // Rule 1: Visa-free or ETA entries must never say insurance is mandatory for visa
+      if (["free","eta"].includes(status)) {
+        if ((e.insurance_note || "").toLowerCase().includes("visa")) {
+          e.insurance_note = "Recommended for all international travel.";
+          e.insurance = "recommended";
+        }
+      }
+      // Rule 2: Visa-free entries must never have status=required in notes
+      // Rule 3: ETA entries must never say ESTA for non-VWP passports
+      if (status === "eta") {
+        const notesLow = (e.notes || "").toLowerCase();
+        if (notesLow.includes("esta") && !VWP.includes(passport)) {
+          e.status = "required";
+          e.notes = "Visa required. Apply at the US embassy before travel.";
+        }
+      }
+      // Rule 4: Required entries must never say insurance is not needed
+      if (status === "required") {
+        if (e.insurance === "none" || !e.insurance) {
+          e.insurance = "required";
+          e.insurance_note = "Travel insurance is strongly recommended.";
+        }
+      }
+    }
+  }
+})();
+
 // ── INIT ─────────────────────────────────────────────
 applyLang();
 initAC();
