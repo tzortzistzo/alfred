@@ -32,7 +32,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .hero{padding:128px 2rem 56px;text-align:center;max-width:760px;margin:0 auto}
 h1{font-family:'DM Serif Display',serif;font-size:clamp(2.6rem,5.5vw,4rem);line-height:1.06;letter-spacing:-0.03em;margin-bottom:2.5rem}
 h1 em{font-style:italic;color:var(--accent)}
-.form-wrap{max-width:700px;margin:0 auto 2.5rem;padding:0 1.25rem}
+.form-wrap{max-width:700px;margin:0 auto 1.5rem;padding:0 1.25rem}
 .form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow-lg);padding:2rem 2.25rem}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
 .field{display:flex;flex-direction:column;gap:5px}
@@ -123,7 +123,7 @@ h1 em{font-style:italic;color:var(--accent)}
 .how-num{font-size:11px;font-weight:600;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:.75rem}
 .how-card h3{font-size:14.5px;font-weight:500;margin-bottom:.5rem}
 .how-card p{font-size:13px;color:var(--text2);line-height:1.65}
-.trust{max-width:700px;margin:0 auto 3rem;display:flex;align-items:center;justify-content:center;gap:2.5rem;flex-wrap:wrap;padding:0 1.25rem}
+.trust{max-width:700px;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;gap:2.5rem;flex-wrap:wrap;padding:0 1.25rem}
 .ti{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text3)}
 .sherpa-btn:hover{background:#1e40af !important}
 .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:1.25rem 1.5rem;margin-bottom:12px;animation:up .3s ease .1s both}
@@ -1022,7 +1022,11 @@ function renderResults({passport, from, to, via, result}) {
   }
 
   wrap.classList.add("show");
-  setTimeout(() => { const first = wrap.firstChild; if (first) first.scrollIntoView({behavior:"smooth",block:"start"}); else wrap.scrollIntoView({behavior:"smooth",block:"start"}); }, 80);
+  setTimeout(() => {
+    const first = wrap.firstChild || wrap;
+    const top = first.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({top: top, behavior: "smooth"});
+  }, 80);
 }
 
 // ── MENU ─────────────────────────────────────────────
