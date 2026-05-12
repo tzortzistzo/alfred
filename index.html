@@ -126,6 +126,9 @@ h1 em{font-style:italic;color:var(--accent)}
 .trust{max-width:700px;margin:0 auto 3rem;display:flex;align-items:center;justify-content:center;gap:2.5rem;flex-wrap:wrap;padding:0 1.25rem}
 .ti{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text3)}
 .sherpa-btn:hover{background:#1e40af !important}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:1.25rem 1.5rem;margin-top:8px;margin-bottom:8px;animation:up .3s ease .25s both}
+.summary-card p{font-size:14px;color:var(--text2);line-height:1.75;margin:0}
+.summary-card .summary-label{font-size:10.5px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
 @keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(29,78,216,0.4)}50%{box-shadow:0 0 0 5px rgba(29,78,216,0)}}
 .nav-pulse{width:9px;height:9px;border-radius:50%;background:#1D4ED8;flex-shrink:0;animation:pulse-dot 2s ease-in-out infinite}
 
@@ -637,6 +640,7 @@ function analyze() {
             passport_validity: data.passport_validity_months || 6,
             insurance:'recommended', insurance_note:'Recommended for all international travel.',
             entry_form: data.entry_form || '',
+            summary: data.summary || '',
             aiSource: true,
             fromCache: data.cached === true
           }});
@@ -704,6 +708,7 @@ function analyze() {
           insurance: 'recommended',
           insurance_note: 'Recommended for all international travel.',
           entry_form: data.entry_form || '',
+          summary: data.summary || '',
           aiSource: true,
           fromCache: data.cached === true
         };
@@ -746,6 +751,44 @@ function buildSherpaFallbackUrl(passport, destination) {
   return `https://apply.joinsherpa.com/travel-restrictions/${dest}?affiliateId=astortravel&nationality=${nat}&language=en-US`;
 }
 
+function generateSummary(passport, destination, purpose, result) {
+  if (!result) return "";
+  const p = passport;
+  const d = destination;
+  const days = result.days ? result.days + " days" : null;
+  const pur = (purpose || "Tourism").toLowerCase();
+
+  if (result.status === "free") {
+    if (days) return p + " passport holders enjoy visa-free entry to " + d + " for up to " + days + ". No pre-registration is required — simply ensure your passport remains valid for the duration of your stay.";
+    return p + " passport holders benefit from full freedom of movement to " + d + ". Travel freely with your passport or national identity card, with no restrictions on length of stay.";
+  }
+  if (result.status === "eta") {
+    const notes = (result.notes || "").toLowerCase();
+    if (notes.includes("esta")) return p + " passport holders may enter the United States without a visa under the Visa Waiver Program. An ESTA authorisation is required before departure — it is valid for two years, with stays of up to 90 days, or until your passport expires, whichever comes first.";
+    if (notes.includes("uk eta") || notes.includes("apply-electronic-travel")) return p + " passport holders are welcome in the United Kingdom without a visa. A UK ETA must be obtained before travel — a straightforward online process that takes only a few minutes to complete.";
+    if (notes.includes("evisitor") || notes.includes("australia")) return p + " passport holders may visit Australia without a visa using the free eVisitor authorisation. Apply online before departure at the Department of Home Affairs website.";
+    if (notes.includes("nzeta")) return p + " passport holders can visit New Zealand without a visa, but must obtain an NZeTA before travel. The application is completed online in minutes and is linked electronically to your passport.";
+    if (notes.includes("k-eta")) return p + " passport holders enjoy visa-free access to South Korea. A K-ETA authorisation is required before boarding — apply online at k-eta.go.kr ahead of your departure.";
+    return p + " passport holders can enter " + d + " without a visa, though a pre-travel authorisation must be secured before departure. The process is completed online and is typically approved within minutes.";
+  }
+  if (result.status === "voa") {
+    return p + " passport holders may obtain a visa on arrival upon reaching " + d + ". Have the applicable fee ready and ensure your passport is valid for at least six months beyond your intended stay.";
+  }
+  if (result.status === "evisa") {
+    return p + " passport holders require an e-Visa to enter " + d + ". Applications are submitted online before departure — a straightforward process that can be completed from home well in advance of travel.";
+  }
+  if (result.status === "required") {
+    if (pur === "work") return "A work visa is required for " + d + " regardless of nationality — tourist agreements do not apply to employment. Allow ample time and contact the " + d + " embassy to begin the process well ahead of your planned departure.";
+    if (pur === "study") return "A student visa is required for " + d + ". Contact the " + d + " embassy or consulate to confirm the specific documents and processing times needed for your institution and programme.";
+    if (pur === "residence") return "A residence permit or long-stay visa is required for " + d + ". Requirements vary significantly — consult the " + d + " embassy well in advance and seek professional immigration advice where appropriate.";
+    return p + " passport holders require a visa to enter " + d + ". The application must be submitted to the " + d + " embassy or consulate before travel — allow sufficient time for processing.";
+  }
+  if (result.status === "forbidden") {
+    return "Entry to " + d + " is not currently permitted for " + p + " passport holders. Please verify the current situation with official government sources before making any travel arrangements.";
+  }
+  return "";
+}
+
 function renderResults({passport, from, to, via, result}) {
   const wrap = document.getElementById("results");
   // Normalize via to country name using resolveInput
@@ -761,7 +804,7 @@ function renderResults({passport, from, to, via, result}) {
           ${t("srcLinks").map(s => `<a href="${s.url}" class="src-link" target="_blank" rel="noopener">↗ ${s.label}</a>`).join("")}
         </div>
       </div>`;
-    wrap.classList.add("show");
+  wrap.classList.add("show");
     wrap.scrollIntoView({behavior:"smooth",block:"start"});
     return;
   }
@@ -955,6 +998,27 @@ function renderResults({passport, from, to, via, result}) {
         "<p style='font-size:11px;color:#3b82f6;margin-top:.75rem'>Secure &middot; Fast &middot; Official sources &middot; 24/7 support</p>";
       wrap.appendChild(sherpaDiv);
     }
+  }
+
+  // Summary card — Alfred's written note
+  const summaryText = (result && result.summary)
+    ? result.summary
+    : generateSummary(passport, to, purpose, result);
+  if (summaryText) {
+    const summaryDiv = document.createElement("div");
+    summaryDiv.className = "summary-card";
+    const dotColor = (result.aiSource && !result.fromCache) ? '#DC2626' : '#1D4ED8';
+    const dotLabel = (result.aiSource && !result.fromCache) ? 'Live AI &mdash; charged' : 'Free';
+    summaryDiv.innerHTML =
+      "<div style=\"display:flex;align-items:center;justify-content:space-between;margin-bottom:6px\">" +
+        "<div class=\"summary-label\" style=\"margin-bottom:0\">Alfred\'s note</div>" +
+        "<div style=\"display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)\">" +
+          "<div style=\"width:8px;height:8px;border-radius:50%;background:" + dotColor + ";flex-shrink:0\"></div>" +
+          dotLabel +
+        "</div>" +
+      "</div>" +
+      "<p>" + summaryText + "</p>";
+    wrap.insertBefore(summaryDiv, wrap.firstChild);
   }
 
   wrap.classList.add("show");
