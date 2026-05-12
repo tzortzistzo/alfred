@@ -161,14 +161,14 @@ footer a:hover{color:var(--text)}
 <div class="form-wrap">
   <div class="form-card">
     <div class="grid2">
-      <div class="field">
+      <div class="field" id="field-from">
         <div class="flbl" data-t="lblFrom"></div>
         <div class="ac-wrap">
           <input class="fi" id="from" type="text" autocomplete="off" spellcheck="false" data-t-ph="phFrom">
           <div class="ac-list" id="from-list"></div>
         </div>
       </div>
-      <div class="field">
+      <div class="field" id="field-to">
         <div class="flbl" data-t="lblTo"></div>
         <div class="ac-wrap">
           <input class="fi" id="to" type="text" autocomplete="off" spellcheck="false" data-t-ph="phTo">
@@ -177,14 +177,14 @@ footer a:hover{color:var(--text)}
       </div>
     </div>
     <div class="grid2">
-      <div class="field">
+      <div class="field" id="field-passport">
         <div class="flbl" data-t="lblPassport"></div>
         <div class="ac-wrap">
           <input class="fi" id="passport" type="text" autocomplete="off" spellcheck="false" data-t-ph="phPassport">
           <div class="ac-list" id="passport-list"></div>
         </div>
       </div>
-      <div class="field">
+      <div class="field" id="field-via">
         <div class="flbl" data-t="lblVia"></div>
         <div class="ac-wrap">
           <input class="fi" id="via" type="text" autocomplete="off" spellcheck="false" data-t-ph="phVia">
@@ -407,7 +407,8 @@ function setupAC(inputId, listId, fieldKey) {
 
   input.addEventListener("input", function() {
     fieldValues[fieldKey] = "";
-    document.getElementById("field-" + fieldKey).classList.remove("field-error");
+    const fe = document.getElementById("field-" + fieldKey); if (fe) fe.classList.remove("field-error");
+    if (!this.value.trim()) fieldValues[fieldKey] = "";
     const q = this.value;
     if (!q.trim()) { list.classList.remove("open"); return; }
     const items = filterCountries(q);
@@ -536,6 +537,7 @@ function analyze() {
   let hasError = false;
 
   if (!passport) { shakeField("passport"); hasError = true; }
+  if (!from) { shakeField("from"); hasError = true; }
   if (!to) { shakeField("to"); hasError = true; }
 
   // Same country check — from and to cannot be the same
