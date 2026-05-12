@@ -41,6 +41,10 @@ h1 em{font-style:italic;color:var(--accent)}
 .fi{width:100%;padding:11px 14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color 0.15s,box-shadow 0.15s}
 .fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(15,48,152,0.10);background:#fff}
 .fi::placeholder{color:var(--text3)}
+.field-error .flbl{color:#DC2626}
+.field-error .fi{border-color:#DC2626!important;box-shadow:0 0 0 3px rgba(220,38,38,0.12)!important;background:#fff!important}
+@keyframes shake{0%{transform:translateX(0)}15%{transform:translateX(-6px)}30%{transform:translateX(6px)}45%{transform:translateX(-5px)}60%{transform:translateX(5px)}75%{transform:translateX(-3px)}90%{transform:translateX(3px)}100%{transform:translateX(0)}}
+.shake{animation:shake 0.45s ease}
 .ac-list{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:500;background:var(--surface);border:1px solid var(--border-med);border-radius:var(--r-sm);max-height:210px;overflow-y:auto;box-shadow:var(--shadow-lg)}
 .ac-list.open{display:block}
 .ac-item{padding:10px 14px;font-size:13.5px;cursor:pointer;color:var(--text);border-bottom:1px solid var(--border);transition:background 0.1s}
@@ -228,7 +232,7 @@ const T = {
   en:{
     h1:"You pack the bags.<br>Alfred handles <em>the rest</em>.",
     lblFrom:"Departing from", lblTo:"Traveling to", lblPassport:"Passport nationality", lblVia:"Transiting via (optional)", lblPurpose:"Purpose of travel",
-    phFrom:"Country or code e.g. GR", phTo:"Country or code e.g. GB", phPassport:"Nationality e.g. FR", phVia:"Optional e.g. TR",
+    phFrom:"Country or airport", phTo:"Country or airport", phPassport:"Nationality e.g. US", phVia:"e.g. FR",
     runBtn:"Check my documents",
     disclaimer:"For guidance only — not legal or immigration advice. Always confirm with the official embassy or consulate before traveling.",
     purposes:["Tourism","Business trip","Transit only","Study","Work","Residence"],
@@ -403,6 +407,7 @@ function setupAC(inputId, listId, fieldKey) {
 
   input.addEventListener("input", function() {
     fieldValues[fieldKey] = "";
+    document.getElementById("field-" + fieldKey).classList.remove("field-error");
     const q = this.value;
     if (!q.trim()) { list.classList.remove("open"); return; }
     const items = filterCountries(q);
@@ -517,10 +522,31 @@ function analyze() {
   const from     = fieldValues.from     || resolveInput(document.getElementById("from").value);
   const via      = fieldValues.via      || resolveInput(document.getElementById("via").value);
 
-  if (!passport || !to) {
-    alert(lang==="gr" ? "Επιλέξτε υπηκοότητα και προορισμό." : "Please select your passport nationality and destination.");
-    return;
+  // Validate fields with shake effect
+  const shakeField = (id) => {
+    const el = document.getElementById("field-" + id);
+    if (!el) return;
+    el.classList.add("field-error");
+    el.classList.remove("shake");
+    void el.offsetWidth;
+    el.classList.add("shake");
+    el.addEventListener("animationend", () => el.classList.remove("shake"), {once:true});
+  };
+
+  let hasError = false;
+
+  if (!passport) { shakeField("passport"); hasError = true; }
+  if (!to) { shakeField("to"); hasError = true; }
+
+  // Same country check — from and to cannot be the same
+  if (from && to && resolveInput(from) === to) {
+    shakeField("from");
+    shakeField("to");
+    hasError = true;
   }
+
+  // Also shake passport if missing
+  if (hasError) return;
 
   const purposeLow = purpose.toLowerCase();
   const isLongStay = purposeLow === 'work' || purposeLow === 'residence' || purposeLow === 'study';
