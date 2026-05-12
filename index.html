@@ -233,7 +233,7 @@ const T = {
       {num:"Step 02",title:"Instant document check",body:"Alfred scans his database and returns a structured breakdown instantly — no AI cost, no waiting."},
       {num:"Step 03",title:"Travel with confidence",body:"See exactly what is mandatory, recommended, and optional before you book."}
     ],
-    trust:["No account needed","Free forever","Based on real visa data","Updated regularly"],
+    trust:["Based on real visa data","Updated regularly","199 countries covered","For guidance only"],
     ftTerms:"Terms", ftPrivacy:"Privacy", ftContact:"Contact",
     ftDisc:"Alfred provides guidance only. Always verify with the official embassy or consulate of your destination.",
     noData:"No data for this route",
@@ -491,11 +491,12 @@ function setPurpose(el, val) {
 
 // ── STATUS CONFIG ─────────────────────────────────────
 const SC = {
-  free:    {cls:"ok",   icon:"✓"},
-  voa:     {cls:"voa",  icon:"V"},
-  evisa:   {cls:"evisa",icon:"e"},
-  required:{cls:"req",  icon:"!"},
-  forbidden:{cls:"req", icon:"✕"}
+  free:     {cls:"ok",   icon:"✓"},
+  eta:      {cls:"ok",   icon:"✓"},
+  voa:      {cls:"voa",  icon:"V"},
+  evisa:    {cls:"evisa",icon:"e"},
+  required: {cls:"req",  icon:"!"},
+  forbidden:{cls:"req",  icon:"✕"}
 };
 
 // ── ANALYZE ───────────────────────────────────────────
