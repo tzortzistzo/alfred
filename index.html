@@ -75,7 +75,7 @@ h1 em{font-style:italic;color:var(--accent)}
 .sbadge.ok{background:var(--ok-bg);color:var(--ok);border:1px solid rgba(22,101,52,0.15)}
 .sbadge.voa{background:#EFF6FF;color:#1D4ED8;border:1px solid rgba(29,78,216,0.15)}
 .sbadge.evisa{background:#F5F3FF;color:#5B21B6;border:1px solid rgba(91,33,182,0.15)}
-.sbadge.eta{background:#FFF7ED;color:#C2410C;border:1px solid rgba(194,65,12,0.2)}
+.sbadge.eta{background:var(--ok-bg);color:var(--ok);border:1px solid rgba(22,101,52,0.15)}
 .sbadge.req{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(185,28,28,0.15)}
 
 /* Info table */
@@ -252,8 +252,8 @@ const T = {
     days:"days", months:"months",
     validityNote: function(m){ return "Must be valid at least " + m + " month" + (m>1?"s":"") + " beyond return date"; },
     euFreedom:"EU freedom of movement — travel with national ID or passport. No restrictions.",
-    statusLabel:{free:"Visa-free",eta:"Pre-travel auth required",voa:"Visa on arrival",evisa:"eVisa required",required:"Visa required",forbidden:"Entry not permitted"},
-    pillLabel:{free:"Visa-free",eta:"Pre-travel auth",voa:"Visa on arrival",evisa:"eVisa",required:"Visa required",forbidden:"Not admitted"},
+    statusLabel:{free:"Visa-free",eta:"Visa-free",voa:"Visa on arrival",evisa:"eVisa required",required:"Visa required",forbidden:"Entry not permitted"},
+    pillLabel:{free:"Visa-free",eta:"Visa-free",voa:"Visa on arrival",evisa:"eVisa",required:"Visa required",forbidden:"Not admitted"},
     insRequired:"Mandatory", insRecommended:"Recommended",
     transitOk:"Not required", transitReq:"May be required — verify with carrier",
     purpose:"Purpose"
@@ -688,7 +688,7 @@ function renderResults({passport, from, to, via, result}) {
     else if (notesUp.includes("NZETA") || notesUp.includes("NZETA")) pillLbl = "NZeTA required";
     else if (notesUp.includes("EVISA") || notesUp.includes("E-VISA")) pillLbl = "eVisa required";
     else if (notesUp.includes("ETA")) pillLbl = "ETA required";
-    else pillLbl = "Pre-travel auth";
+    else pillLbl = "Visa-free";
   }
 
   // Check if ETA applies (mandatory pre-travel auth)
@@ -743,14 +743,9 @@ function renderResults({passport, from, to, via, result}) {
   let entryClass = "";
   if (result.status === "free") { entryVal = t("statusLabel").free; entryClass = "v-green"; }
   else if (result.status === "eta") {
-    // Show specific auth name (ESTA/ETA/K-ETA) in red
-    const notesUp = (result.notes || "").toUpperCase();
-    if (notesUp.includes("ESTA")) entryVal = "ESTA required";
-    else if (notesUp.includes("K-ETA")) entryVal = "K-ETA required";
-    else if (notesUp.includes("NZETA")) entryVal = "NZeTA required";
-    else if (notesUp.includes("ETA")) entryVal = "ETA required";
-    else entryVal = "Pre-travel authorisation required";
-    entryClass = "v-red";
+    // Visa row shows Visa-free in green — ETA details go in Pre-travel & forms row
+    entryVal = "Visa-free";
+    entryClass = "v-green";
   }
   else if (result.status === "voa") { entryVal = t("statusLabel").voa; entryClass = "v-amber"; }
   else if (result.status === "evisa") { entryVal = t("statusLabel").evisa; entryClass = "v-red"; }
